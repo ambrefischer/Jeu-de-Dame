@@ -68,8 +68,8 @@ if __name__ == "__main__":
 
             # Problème dans les coordonnées
             while make_a_move["message"] == "pb":
-                game = player.play(gameboard)
                 view(gameboard)
+                game = player.play(gameboard)
                 make_a_move = player.one_turn(game["s_row"], game["s_column"],
                                               game["t_row"], game["t_column"], gameboard)
 
