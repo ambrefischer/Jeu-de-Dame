@@ -6,6 +6,12 @@ Created on Sat Mar 14 09:51:07 2020
 """
 import numpy as np
 
+"""
+Remarques Amaury dans create_gameboard, tu devrais injecter j1 j2, et utiliser j1.number et j2.number plutot que marquer 1 et 2,
+des fois que t'auraix envie de changer 1 ou 2 par X et Y faut que ton code puisse fonctionner :)
+cf la remarque dans take_king de player.py
+"""
+
 
 def create_gameboard():
     '''Création d'un plateau initial avec 20 pions du joueur 1

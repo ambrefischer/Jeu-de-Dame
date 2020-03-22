@@ -7,6 +7,10 @@ Created on Sat Mar 14 09:51:23 2020
 from utils import *
 from gameboard import *
 
+"""
+Remarques Amaury : On fait trés souvent un fichier par classe (tu peux créer un dossier Players, et mettre dedans Player.py, Human.py)
+"""
+
 
 class Player():
     def __init__(self, number, score):
@@ -20,19 +24,30 @@ class Player():
         t_row = target_row - 1
         t_column = target_column - 1
 
+        """
+        # Remarques Amaury : fait moi au moins une fonction dans utils isOutsideBoard qui prend une ligne et une colonne en entrée
+        # et te renvoie true ou false si l'un des deux est <0 ou >9. C'est plus logique, moins redondant, et plus facile a lire ;)
+        """
         # Mauvaise entrée des coordonnées : hors plateau
         if (s_row < 0 or s_row > 9) or (s_column < 0 or s_column > 9) or (t_row < 0 or t_row > 9) or (t_column < 0 or t_column > 9):
             display_message(
                 "VEUILLEZ SAISIR DES COORDONNEES SUR LE PLATEAU.", "red")
+            # Remarques Amaury : attention du black sur du black je pense pas que ca se voit :)
             display_message("Allez, on recommence...", "black")
             return {"message": "pb"}
 
+            '''
+        # Remarques Amaury : erreur classique, tu n'as pas besoin de 'else' ici. Puisque si l'utilisateur entre dans la boucle if, il prend un return
+        # donc si tu sors ce morceau de code du else, ca revient au même, et c'est plus lisible
+        # Pareil en dessous avec if, elif else, comme tu as des return, tu peux faire if, if et rien
+        # (réflexion faite, ya plein d'endroit ou tu peux faire ca dans ton code, ne serait-ce que dans ce fichier :)
+        '''
         # On reste dans les coordonnées du plateau.
         else:
             # Le joueur prend bien un pion et le sien.
             if int(gameboard[s_row][s_column]) == self.number:
                 return self.take_checker(s_row, s_column, t_row,
-                                  t_column, gameboard)
+                                         t_column, gameboard)
 
             # Le joueur prend une dame et la sienne.
             elif float(gameboard[s_row][s_column]) == self.number+0.5:
@@ -44,9 +59,11 @@ class Player():
                 display_message(
                     "PS : Au fait, vos pions sont les %d ." % self.number, "black")
                 return {"message": "pb"}
-            
 
     def take_checker(self, s_row, s_column, t_row, t_column, gameboard):
+        '''
+        Remarques Amaury : idem regarde dans player.py ligne 100 ma remarque.
+        '''
         if self.number == 1:
             factor = 1
             opponent_number = 2
@@ -60,6 +77,9 @@ class Player():
             return {"message": "I'm on my way", "type": "Checker"}
 
         # Le joueur le met sur une case acceptée pour manger.
+            """
+        oublie pas d'utiliser des constantes ici
+        """
         elif (t_row == s_row+2 and t_column == s_column+2) \
                 and int(gameboard[s_row+1][s_column+1]) == opponent_number:
             return {"message": "I capture", "target": "right - down", "type": "Checker"}
@@ -82,11 +102,21 @@ class Player():
             return {"message": "pb"}
 
     def take_king(self, s_row, s_column, t_row, t_column, gameboard):
+        """
+        c'est hyper moche ca, et ca casse si tu décide de changer le 2 par un 3 ou autre.
+        c'est un probleme d'architecture de ton code, c'est que t'as deux Player mais ils ne savent pas communiquer
+        pour savoir qui est contre qui.
+        L'une des solutions c'est lors de l'initialisation de faire
+        gameboard.register(j1,j2) (ca va enregistrer les deux joueurs dans une variable self.j1 self.j2 de l'objet gameboard)
+        puis quand t'as besoin d'interragir avec l'autre player tu fais (dans une fonction d'un player) gameboard.getOpponent(self) (self = j1 par exemple ici)
+        ca va te renvoyer j2.
+        Et donc pour ta fonction si dessous tu pourrais faire gameboard.getOpponent(self).number  et t'es sur de tout le temps avoir le bon nombre et c'est propre :)
+        """
         if self.number == 1:
             opponent_number = 2
         else:
             opponent_number = 1
-            
+
         # Le joueur la met sur une case acceptée pour bouger : une case sur une diagonale.
         factor_king = abs(t_row - s_row)
         if abs(t_column - s_column) == factor_king and int(gameboard[t_row][t_column]) == 0:
@@ -129,13 +159,15 @@ class Player():
             display_message("PS : Faut lire les règles du jeu..." + "\n" +
                             "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
             return {"message": "pb"}
-        
 
     def win_one_point(self):
         self.score += 1
         display_message("Le joueur %d prend un point." %
                         (self.number), "purple")
 
+        '''
+        Remarques Amaury : idem regarde dans player.py ligne 100 ma remarque.
+        '''
         opponent_number = 1
         if self.number == 1:
             opponent_number = 2
@@ -151,7 +183,7 @@ class Human(Player):
     # Cette fonction a pour but de demander au joueur ce qu'il veut faire pendant son tour.
     def play(self, gameboard):
         print("Les lignes et les colonnes commencent à 1 !")
-        
+
         start_row = int(input("Sur quelle ligne se situe votre pion ? "))
 
 #        while True:

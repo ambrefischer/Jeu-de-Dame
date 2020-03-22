@@ -5,6 +5,10 @@ Created on Sat Mar 14 09:50:58 2020
 @author: Ambre
 """
 
+"""
+Remarques Amaury : On fait trés souvent un fichier par classe (tu peux créer un dossier Pieces, et mettre dedans Piece.py, Checker.py King.py)
+"""
+
 
 class Piece():
     def __init__(self, start_row, start_column, target_row, target_column, player_number):
@@ -27,6 +31,9 @@ class Checker(Piece):
         super().__init__(start_row, start_column, target_row, target_column, player_number)
 
     # Effacement du pion adverse
+    """
+    oublie pas d'utiliser des constantes ici
+    """
 
     def capture(self, gameboard, make_a_move):
         if make_a_move["target"] == "right - down":
@@ -50,6 +57,10 @@ class Checker(Piece):
 
         else:
             return False
+
+    '''
+    Remarques Amaury : idem regarde dans player.py ligne 100 ma remarque.
+    '''
 
     def become_king(self, gameboard):
         # Modification du pion du joueur 1 en dame
