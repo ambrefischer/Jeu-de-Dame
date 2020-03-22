@@ -31,12 +31,12 @@ class Player():
         else:
             # Le joueur prend bien un pion et le sien.
             if int(gameboard[s_row][s_column]) == self.number:
-                self.take_checker(s_row, s_column, t_row,
-                                  t_column, gameboard, factor)
+                return self.take_checker(s_row, s_column, t_row,
+                                  t_column, gameboard)
 
             # Le joueur prend une dame et la sienne.
             elif float(gameboard[s_row][s_column]) == self.number+0.5:
-                self.take_king(gameboard, s_row, s_column)
+                return self.take_king(gameboard, s_row, s_column)
 
             # Le joueur n'a pas pris son pion.
             else:
@@ -144,18 +144,20 @@ class Human(Player):
     # Cette fonction a pour but de demander au joueur ce qu'il veut faire pendant son tour.
     def play(self, gameboard):
         print("Les lignes et les colonnes commencent à 1 !")
+        
+        start_row = int(input("Sur quelle ligne se situe votre pion ? "))
 
-        while True:
-            try:
-                start_row = int(
-                    input("Sur quelle ligne se situe votre pion ? "))
-                break
-            except ValueError:
-                display_message(
-                    "Veuillez rentrer des coordonnée de cases.", "red")
-                display_message(
-                    "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
+#        while True:
+#            try:
+#                start_row = int(
+#                    input("Sur quelle ligne se situe votre pion ? "))
+#                break
+#            except ValueError:
+#                display_message(
+#                    "Veuillez rentrer des coordonnée de cases.", "red")
+#                display_message(
+#                    "Les lignes et les colonnes commencent à 1 !", "black")
+#                view(gameboard)
 
         while True:
             try:

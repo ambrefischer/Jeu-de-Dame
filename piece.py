@@ -30,13 +30,13 @@ class Checker(Piece):
 
     def capture(self, gameboard, make_a_move):
         if make_a_move["target"] == "right - down":
-            gameboard[self.s_row+1][self.t_column+1] = 0
+            gameboard[self.s_row+1][self.s_column+1] = 0
         elif make_a_move["target"] == "left - down":
-            gameboard[self.t_row+1][self.t_column-1] = 0
+            gameboard[self.s_row+1][self.s_column-1] = 0
         elif make_a_move["target"] == "right - up":
-            gameboard[self.t_row-1][self.t_column+1] = 0
+            gameboard[self.s_row-1][self.s_column+1] = 0
         else:
-            gameboard[self.t_row-1][self.t_column-1] = 0
+            gameboard[self.s_row-1][self.s_column-1] = 0
 
         return gameboard
 
