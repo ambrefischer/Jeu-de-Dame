@@ -23,7 +23,19 @@ from player import Human  # , IA
 from utils import *
 from gameboard import *
 
+# AMAURY Comment Beginning
+# Tu peux créer une fonction 'initialisation' qui contient le code lancé la premiere fois => code beaucoup plus clair
+# Tu peux créer une fonction 'playTurn' qui contient le code dans le "while" => code beaucoup plus clair
+"""
+    Tu peux créer un fichier constant.py et faire from constant import *
+    dans ce fichier constant.py tu met toutes tes constantes typiquement STILL_PLAYING = "still playing"
+    et aprés tu remplaces dans ton code "still playing" par STILL_PLAYING.
+    => ca permet d'éviter que a un endroit tu marques "still playying" que tu t'en rendes pas compte et que tu passes 20 ans
+    a chercher pourquoi tu marches pas, là STILL_PLAYING si tu l'écris mal, tu pourras pas lancer ton code.
+    fait ca pour "I'm on my way" "end of play" "right - down" left etc.... chaque fois que tu compare object["status"] == "dutexte"
 
+"""
+# AMAURY Comment End
 if __name__ == "__main__":
     display_beginning()
     display_message("Bienvenue sur le meilleur jeu qui existe.")
