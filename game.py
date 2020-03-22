@@ -24,7 +24,7 @@ from player import Human  # , IA
 from utils import *
 from gameboard import *
 from constants import *
-from meilleurs_joueurs import *
+from highscore import *
 
 
 def play_with():

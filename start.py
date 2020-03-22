@@ -29,8 +29,13 @@ if __name__ == "__main__":
     # Comdition de gagne
     if j1.score < j2.score:
         display_message("Le joueur 2 a gagné.", "green")
+        add_player(nickname, j2.score)
     else:
         display_message("Le joueur 1 a gagné.", "blue")
+        add_player(nickname, j1.score)
+
+        
+    
         
 
     
