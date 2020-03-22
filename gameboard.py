@@ -25,6 +25,11 @@ def create_gameboard():
 
 
 def view(gameboard):
-    print(" 1  2  3  4  5  6  7  8  9  10", "\n")
+    print("    1  2  3  4  5  6  7  8  9  10", "\n")
+    numero_ligne = 1
     for gameLine in gameboard:
-        print(gameLine)
+        if numero_ligne < 10:
+            print(numero_ligne, "", gameLine)
+            numero_ligne += 1
+        else:
+            print(numero_ligne, gameLine)
