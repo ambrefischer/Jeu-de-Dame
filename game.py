@@ -11,7 +11,7 @@ suggestion d'idées :
     feu d'artifice de fin
     demander d'obtenir les règles du jeu
     si le joueur ne peut plus bouger mais il lui reste des pions, il perd la partie.
-    
+    créer une fonction récursive
     
 ne pas oublier :
     faire les figures demandés
@@ -24,6 +24,7 @@ from player import Human  # , IA
 from utils import *
 from gameboard import *
 from constants import *
+from meilleurs_joueurs import *
 
 
 def play_with():
@@ -37,7 +38,9 @@ def play_with():
         return Human(1, 0)
 
 
-def initialisation():
+def initialisation(): 
+    view_highscore()
+    
     display_message("Let's the game begin !")
 
     # Création du plateau
@@ -48,6 +51,12 @@ def initialisation():
     player_turn = {"player_number": 1.0, "status": "still playing"}
     
     return {"player_turn": player_turn, "gameboard": gameboard}
+
+
+#def continue_partie():
+#    choice = input("Voulez-vous continuer la partie")
+#    if choice == "oui":
+#        
 
 
 def who_plays(player_turn, j1, j2):

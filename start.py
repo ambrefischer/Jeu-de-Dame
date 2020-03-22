@@ -11,8 +11,12 @@ if __name__ == "__main__":
     display_beginning()
     display_message("Bienvenue sur le meilleur jeu qui existe.")
     
+    nickname = input("Veuillez indiquer un surnom : ")
+    
     j1 = play_with()
     j2 = Human(2, 0)
+    
+    
     
     initialisation = initialisation()
     player_turn = initialisation["player_turn"]
