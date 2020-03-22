@@ -6,6 +6,7 @@ Created on Sat Mar 14 09:50:37 2020
 
 suggestion d'idées :
     on peut suggérer au joueur quels mouvement il peut faire
+    créer un fichier avec les dix meilleurs joueurs
     musique
     feu d'artifice de fin
     demander d'obtenir les règles du jeu
@@ -36,37 +37,36 @@ from gameboard import *
 
 """
 # AMAURY Comment End
-if __name__ == "__main__":
-    display_beginning()
-    display_message("Bienvenue sur le meilleur jeu qui existe.")
+
+def play_with():
     choice = input("Voulez-vous jouer contre un 'joueur' ou un 'ordi' ? ")
 
     # Selection de l'adversaire
     if choice == "joueur":
-        j1 = Human(1, 0)
+        return Human(1, 0)
     else:
         display_message("Les autres modes ne sont pas encore disponibles...")
-        j1 = Human(1.0, 0)
-    j2 = Human(2.0, 0)
+        return Human(1, 0)
 
+
+def initialisation():
     display_message("Let's the game begin !")
 
     # Création du plateau
     gameboard = create_gameboard()
     view(gameboard)
-
+    
     # Définition du tour du joueur
     player_turn = {"player_number": 1.0, "status": "still playing"}
-    # Début du jeu
-    while j1.score < 20 or j2.score < 20:
-        # Tour du joueur 1
-        if player_turn["player_number"] % 2 == 1.0:
-            player = j1
-        # Tour du joueur 2
-        else:
-            player = j2
+    
+    return {"player_turn": player_turn, "gameboard": gameboard}
 
-        # Le joueur peut rejouer si il mange un pion adverse.
+    
+def play_turn(player_turn, j1, j2, gameboard):
+        # Détermination de à qui le tour
+        player = who_plays(player_turn, j1, j2)
+
+        # Le joueur peut rejouer s'il mange un pion adverse.
         while player_turn["status"] == "still playing":
             display_message(
                 "Joueur %d, à vous de jouer. Votre score est de %d."
@@ -86,12 +86,7 @@ if __name__ == "__main__":
                                               game["t_row"], game["t_column"], gameboard)
 
             # Acceptation des coordonnées : la pièce est un pion ou une dame
-            if make_a_move["type"] == "Checker":
-                piece = Checker(game["s_row"], game["s_column"],
-                                game["t_row"], game["t_column"], player.number)
-            else:
-                piece = King(game["s_row"], game["s_column"],
-                             game["t_row"], game["t_column"], player.number)
+            piece = choice_piece(game, make_a_move, player)
 
             # Si le joueur désire se déplacer.
             if make_a_move["message"] == "I'm on my way":
@@ -112,8 +107,24 @@ if __name__ == "__main__":
         player_turn["player_number"] += 1
         player_turn["status"] = "still playing"
 
-    # Comdition de gagne
-    if j1.score < j2.score:
-        display_message("Le joueur 2 a gagné.", "green")
+    
+        
+        
+def who_plays(player_turn, j1, j2):
+    # Tour du joueur 1
+    if player_turn["player_number"] % 2 == 1.0:
+        return j1
+    # Tour du joueur 2
     else:
-        display_message("Le joueur 1 a gagné.", "blue")
+        return j2
+    
+    
+def choice_piece(game, make_a_move, player):
+    if make_a_move["type"] == "Checker":
+        piece = Checker(game["s_row"], game["s_column"],
+                        game["t_row"], game["t_column"], player.number)
+    else:
+        piece = King(game["s_row"], game["s_column"],
+                     game["t_row"], game["t_column"], player.number)
+    return piece
+    

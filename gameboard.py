@@ -25,16 +25,9 @@ def create_gameboard():
 
 
 def view(gameboard):
-    print("    1  2  3  4  5  6  7  8  9  10", "\n")
-    """
-    Better to write :
-    for index in range(gameboard):
-        print(index + 1,gameboard[index])
-    """
-    numero_ligne = 1
-    for gameLine in gameboard:
-        if numero_ligne < 10:
-            print(numero_ligne, "", gameLine)
-            numero_ligne += 1
+    print("\n" "    1  2  3  4  5  6  7  8  9  10", "\n")
+    for index in range(10):
+        if index != 9:
+            print(index + 1, "", gameboard[index])
         else:
-            print(numero_ligne, gameLine)
+            print(index + 1, gameboard[index])

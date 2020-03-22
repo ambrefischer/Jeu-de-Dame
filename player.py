@@ -44,6 +44,7 @@ class Player():
                 display_message(
                     "PS : Au fait, vos pions sont les %d ." % self.number, "black")
                 return {"message": "pb"}
+            
 
     def take_checker(self, s_row, s_column, t_row, t_column, gameboard):
         if self.number == 1:
@@ -81,6 +82,11 @@ class Player():
             return {"message": "pb"}
 
     def take_king(self, s_row, s_column, t_row, t_column, gameboard):
+        if self.number == 1:
+            opponent_number = 2
+        else:
+            opponent_number = 1
+            
         # Le joueur la met sur une case acceptée pour bouger : une case sur une diagonale.
         factor_king = abs(t_row - s_row)
         if abs(t_column - s_column) == factor_king and int(gameboard[t_row][t_column]) == 0:
@@ -123,6 +129,7 @@ class Player():
             display_message("PS : Faut lire les règles du jeu..." + "\n" +
                             "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
             return {"message": "pb"}
+        
 
     def win_one_point(self):
         self.score += 1
