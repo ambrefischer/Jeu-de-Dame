@@ -25,19 +25,6 @@ from utils import *
 from gameboard import *
 from constants import *
 
-# AMAURY Comment Beginning
-# Tu peux créer une fonction 'initialisation' qui contient le code lancé la premiere fois => code beaucoup plus clair
-# Tu peux créer une fonction 'playTurn' qui contient le code dans le "while" => code beaucoup plus clair
-"""
-    Tu peux créer un fichier constant.py et faire from constant import *
-    dans ce fichier constant.py tu met toutes tes constantes typiquement STILL_PLAYING = "still playing"
-    et aprés tu remplaces dans ton code "still playing" par STILL_PLAYING.
-    => ca permet d'éviter que a un endroit tu marques "still playying" que tu t'en rendes pas compte et que tu passes 20 ans
-    a chercher pourquoi tu marches pas, là STILL_PLAYING si tu l'écris mal, tu pourras pas lancer ton code.
-    fait ca pour "I'm on my way" "end of play" "right - down" left etc.... chaque fois que tu compare object["status"] == "dutexte"
-
-"""
-# AMAURY Comment End
 
 def play_with():
     choice = input("Voulez-vous jouer contre un 'joueur' ou un 'ordi' ? ")
@@ -61,6 +48,25 @@ def initialisation():
     player_turn = {"player_number": 1.0, "status": "still playing"}
     
     return {"player_turn": player_turn, "gameboard": gameboard}
+
+
+def who_plays(player_turn, j1, j2):
+    # Tour du joueur 1
+    if player_turn["player_number"] % 2 == 1.0:
+        return j1
+    # Tour du joueur 2
+    else:
+        return j2
+    
+    
+def choice_piece(game, make_a_move, player):
+    if make_a_move["type"] == CHECKER:
+        piece = Checker(game["s_row"], game["s_column"],
+                        game["t_row"], game["t_column"], player.number)
+    else:
+        piece = King(game["s_row"], game["s_column"],
+                     game["t_row"], game["t_column"], player.number)
+    return piece
 
     
 def play_turn(player_turn, j1, j2, gameboard):
@@ -110,22 +116,5 @@ def play_turn(player_turn, j1, j2, gameboard):
 
     
         
-        
-def who_plays(player_turn, j1, j2):
-    # Tour du joueur 1
-    if player_turn["player_number"] % 2 == 1.0:
-        return j1
-    # Tour du joueur 2
-    else:
-        return j2
-    
-    
-def choice_piece(game, make_a_move, player):
-    if make_a_move["type"] == CHECKER:
-        piece = Checker(game["s_row"], game["s_column"],
-                        game["t_row"], game["t_column"], player.number)
-    else:
-        piece = King(game["s_row"], game["s_column"],
-                     game["t_row"], game["t_column"], player.number)
-    return piece
+
     

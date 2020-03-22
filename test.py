@@ -6,6 +6,9 @@ Created on Fri Mar 13 13:19:23 2020
 """
 
 import numpy as np
+from meilleurs_joueurs import *
 
-a = 1.0 % 2
-print(type(a))
+m = Score()
+a = {"you": 1}
+m.sauver()
+print(m.scores)
