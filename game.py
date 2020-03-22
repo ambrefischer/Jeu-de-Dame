@@ -23,6 +23,7 @@ from piece import Checker, King
 from player import Human  # , IA
 from utils import *
 from gameboard import *
+from constants import *
 
 # AMAURY Comment Beginning
 # Tu peux créer une fonction 'initialisation' qui contient le code lancé la premiere fois => code beaucoup plus clair
@@ -67,7 +68,7 @@ def play_turn(player_turn, j1, j2, gameboard):
         player = who_plays(player_turn, j1, j2)
 
         # Le joueur peut rejouer s'il mange un pion adverse.
-        while player_turn["status"] == "still playing":
+        while player_turn["status"] == STILL_PLAYING:
             display_message(
                 "Joueur %d, à vous de jouer. Votre score est de %d."
                 % (player.number, player.score)
@@ -79,7 +80,7 @@ def play_turn(player_turn, j1, j2, gameboard):
                                           game["t_row"], game["t_column"], gameboard)
 
             # Problème dans les coordonnées
-            while make_a_move["message"] == "pb":
+            while make_a_move["message"] == PB:
                 view(gameboard)
                 game = player.play(gameboard)
                 make_a_move = player.one_turn(game["s_row"], game["s_column"],
@@ -89,9 +90,9 @@ def play_turn(player_turn, j1, j2, gameboard):
             piece = choice_piece(game, make_a_move, player)
 
             # Si le joueur désire se déplacer.
-            if make_a_move["message"] == "I'm on my way":
+            if make_a_move["message"] == I_M_ON_MY_WAY:
                 gameboard = piece.move(gameboard)
-                player_turn["status"] = "end of play"
+                player_turn["status"] = END_OF_TURN
 
             # Ou le joueur désire manger un pion adverse.
             else:
@@ -100,12 +101,12 @@ def play_turn(player_turn, j1, j2, gameboard):
                 player.win_one_point()
 
             # Vérification si le pion ne devient pas une dame
-            if make_a_move["type"] == "Checker" and piece.check_king():
+            if make_a_move["type"] == CHECKER and piece.check_king():
                 gameboard = piece.become_king(gameboard)
 
             view(gameboard)
         player_turn["player_number"] += 1
-        player_turn["status"] = "still playing"
+        player_turn["status"] = STILL_PLAYING
 
     
         
@@ -120,7 +121,7 @@ def who_plays(player_turn, j1, j2):
     
     
 def choice_piece(game, make_a_move, player):
-    if make_a_move["type"] == "Checker":
+    if make_a_move["type"] == CHECKER:
         piece = Checker(game["s_row"], game["s_column"],
                         game["t_row"], game["t_column"], player.number)
     else:
