@@ -5,7 +5,6 @@ def display_message(message, color="black"):
     print(" ")
 
 
-
 def select_color(color):
     colors = {
         "grey": "30",
@@ -48,4 +47,3 @@ def display_beginning():
                 _/ |                                                                   
                |__/                                                                                                   
     ''')
-
