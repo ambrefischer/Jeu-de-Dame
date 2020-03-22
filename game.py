@@ -69,9 +69,9 @@ if __name__ == "__main__":
             # Problème dans les coordonnées
             while make_a_move["message"] == "pb":
                 game = player.play(gameboard)
+                view(gameboard)
                 make_a_move = player.one_turn(game["s_row"], game["s_column"],
                                               game["t_row"], game["t_column"], gameboard)
-                view(gameboard)
 
             # Acceptation des coordonnées : la pièce est un pion ou une dame
             if make_a_move["type"] == "Checker":
