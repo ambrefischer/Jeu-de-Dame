@@ -5,6 +5,8 @@ Created on Sat Mar 14 09:50:58 2020
 @author: Ambre
 """
 
+from constants import *
+
 """
 Remarques Amaury : On fait trés souvent un fichier par classe (tu peux créer un dossier Pieces, et mettre dedans Piece.py, Checker.py King.py)
 """
@@ -20,8 +22,9 @@ class Piece():
 
     # Déplacement d'une pièce
     def move(self, gameboard):
+        gameboard[self.t_row][self.t_column] = gameboard[self.s_row][self.s_column]
         gameboard[self.s_row][self.s_column] = 0
-        gameboard[self.t_row][self.t_column] = self.player_number
+
 
         return gameboard
 
@@ -69,8 +72,8 @@ class King(Piece):
 
     # Effacement du pion adverse
     def capture(self, gameboard, make_a_move):
-        opponent_row = make_a_move[opponent_row]
-        opponent_column = make_a_move[opponent_col]
+        opponent_row = make_a_move["opponent_row"]
+        opponent_col = make_a_move["opponent_col"]
         gameboard[opponent_row][opponent_col] = 0
 
         return gameboard

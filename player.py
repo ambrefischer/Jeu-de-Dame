@@ -6,6 +6,7 @@ Created on Sat Mar 14 09:51:23 2020
 """
 from utils import *
 from gameboard import *
+from constants import *
 
 """
 Remarques Amaury : On fait trés souvent un fichier par classe (tu peux créer un dossier Players, et mettre dedans Player.py, Human.py)
@@ -32,13 +33,15 @@ class Player():
             return {"message": PB}
 
         # Le joueur prend bien un pion et le sien.
-        if int(gameboard[s_row][s_column]) == self.number:
+        if float(gameboard[s_row][s_column]) == self.number:
             return self.take_checker(s_row, s_column, t_row,
                                      t_column, gameboard)
 
         # Le joueur prend une dame et la sienne.
         elif float(gameboard[s_row][s_column]) == self.number+0.5:
-            return self.take_king(gameboard, s_row, s_column)
+            where_king = self.where_king(s_row, s_column, t_row, t_column)
+            return self.take_king(s_row, s_column, t_row,
+                                     t_column, gameboard, where_king)
 
         # Le joueur n'a pas pris son pion.
         display_message("VEUILLEZ PRENDRE UNE DE VOS PIECES.", "red")
@@ -57,16 +60,24 @@ class Player():
 
         # Le joueur le met sur une case acceptée pour manger.
         elif (t_row == s_row+2 and t_column == s_column+2) \
-                and int(gameboard[s_row+1][s_column+1]) == self.opponent_number:
+                and int(gameboard[t_row][t_column]) == 0 \
+                and (int(gameboard[s_row+1][s_column+1]) == self.opponent_number \
+                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": RIGHT_DOWN, "type": CHECKER}
         elif (t_row == s_row+2 and t_column == s_column-2) \
-                and int(gameboard[s_row+1][s_column-1]) == self.opponent_number:
+                and int(gameboard[t_row][t_column]) == 0 \
+                and (int(gameboard[s_row+1][s_column-1]) == self.opponent_number \
+                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": LEFT_DOWN, "type": CHECKER}
         elif (t_row == s_row-2 and t_column == s_column+2) \
-                and int(gameboard[s_row-1][s_column+1]) == self.opponent_number:
+                and int(gameboard[t_row][t_column]) == 0 \
+                and (int(gameboard[s_row-1][s_column+1]) == self.opponent_number\
+                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": RIGHT_UP, "type": CHECKER}
         elif (t_row == s_row-2 and t_column == s_column-2) \
-                and int(gameboard[s_row-1][s_column-1]) == self.opponent_number:
+                and int(gameboard[t_row][t_column]) == 0 \
+                and (int(gameboard[s_row-1][s_column-1]) == self.opponent_number\
+                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": LEFT_UP, "type": CHECKER}
 
         # Le joueur ne met pas de bonnes coordonnées.
@@ -77,8 +88,17 @@ class Player():
         return {"message": "pb"}
 
 
+    def where_king(self, s_row, s_column, t_row, t_column):
+        if s_row < t_row :
+            if s_column < t_column :
+                return RIGHT_DOWN
+            return LEFT_DOWN
+        if s_column < t_column :
+                return RIGHT_UP
+        return LEFT_UP
 
-    def take_king(self, s_row, s_column, t_row, t_column, gameboard):
+
+    def take_king(self, s_row, s_column, t_row, t_column, gameboard, where_king):
 
         # Le joueur la met sur une case acceptée pour bouger : une case sur une diagonale.
         factor_king = abs(t_row - s_row)
@@ -92,36 +112,40 @@ class Player():
                 row_up = s_row - distance
                 col_right = s_column + distance
                 col_left = s_column - distance
-                if gameboard[row_up][col_right] == self.opponent_number:
+                if where_king == RIGHT_UP and ([row_up][col_right] == self.opponent_number\
+                        or gameboard[row_up][col_right] == self.opponent_number+0.5):
                     count_capture.append([row_up, col_right])
-                elif gameboard[row_up][col_left] == self.opponent_number:
+                elif where_king == LEFT_UP and (gameboard[row_up][col_left] == self.opponent_number\
+                        or gameboard[row_up][col_left] == self.opponent_number+0.5):
                     count_capture.append([row_up, col_left])
-                elif gameboard[row_down][col_right] == self.opponent_number:
+                elif where_king == RIGHT_DOWN and (gameboard[row_down][col_right] == self.opponent_number\
+                        or gameboard[row_down][col_right] == self.opponent_number+0.5):
                     count_capture.append([row_down, col_right])
-                elif gameboard[row_down][col_left] == self.opponent_number:
+                elif where_king == LEFT_DOWN and (gameboard[row_down][col_left] == self.opponent_number\
+                        or gameboard[row_down][col_left] == self.opponent_number+0.5):
                     count_capture.append([row_down, col_left])
-
+            print(count_capture)
             # Vérification que la dame ne prenne qu'un pion à la fois.
             if len(count_capture) == 1:
-                return {"message": "I capture", "opponent_row": count_capture[0][0],
-                        "opponent_col": count_capture[0][1], "type": "King"}
+                return {"message": I_CAPTURE, "opponent_row": count_capture[0][0],
+                        "opponent_col": count_capture[0][1], "type": KING}
             elif len(count_capture) > 1:
                 display_message(
                     "VOUS NE POUVEZ PAS PLACER VOTRE DAME ICI. RECOMMENCEZ.", "red")
                 display_message("PS : Une Dame ne peut prendre qu'un joueur à la fois, sachez-le !" + "\n" +
                                 "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
-                return {"message": "pb"}
+                return {"message": PB}
 
             # Si la dame ne mange aucun pion alors elle se déplace juste.
-            return {"message": "I'm on my way", "type": "King"}
+            return {"message": I_M_ON_MY_WAY, "type": KING}
 
         # Le joueur ne mets pas de bonnes coordonnées.
-        else:
-            display_message(
-                "VOUS NE POUVEZ PAS PLACER VOTRE DAME ICI. RECOMMENCEZ.", "red")
-            display_message("PS : Faut lire les règles du jeu..." + "\n" +
-                            "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
-            return {"message": "pb"}
+
+        display_message(
+            "VOUS NE POUVEZ PAS PLACER VOTRE DAME ICI. RECOMMENCEZ.", "red")
+        display_message("PS : Faut lire les règles du jeu..." + "\n" +
+                        "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
+        return {"message": PB}
 
     def win_one_point(self):
         self.score += 1

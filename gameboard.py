@@ -5,6 +5,7 @@ Created on Sat Mar 14 09:51:07 2020
 @author: Ambre
 """
 import numpy as np
+from utils import *
 
 
 

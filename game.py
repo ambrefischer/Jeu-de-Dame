@@ -6,7 +6,6 @@ Created on Sat Mar 14 09:50:37 2020
 
 suggestion d'idées :
     on peut suggérer au joueur quels mouvement il peut faire
-    créer un fichier avec les dix meilleurs joueurs
     musique
     feu d'artifice de fin
     demander d'obtenir les règles du jeu
@@ -16,14 +15,8 @@ suggestion d'idées :
 ne pas oublier :
     faire les figures demandés
     obliger à manger si possible
-    pouvoir manger une dame int --> float ?
 """
 
-"""
-Remarques Amaury : Oublie pas de changer un peu le README, tu peux même mettre un license !
-(je te conseille la license MIT qui en gros) autorise tout le monde a copier ton code, l'utiliser, le modifier, ou même l'utiliser a des fins commerciales
-exemple : https://github.com/facebook/react/blob/master/LICENSE
-"""
 
 
 from piece import Checker, King
@@ -117,10 +110,13 @@ def play_turn(player_turn, j1, j2, gameboard):
             player_turn["status"] = END_OF_TURN
 
         # Ou le joueur désire manger un pion adverse.
-        else:
+        elif make_a_move["message"] == I_CAPTURE:
             gameboard = piece.move(gameboard)
             gameboard = piece.capture(gameboard, make_a_move)
             player.win_one_point()
+
+        #else: arreter le tour et recommencer
+
 
         # Vérification si le pion ne devient pas une dame
         if make_a_move["type"] == CHECKER and piece.check_king():
