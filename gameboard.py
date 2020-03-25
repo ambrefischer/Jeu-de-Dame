@@ -6,14 +6,9 @@ Created on Sat Mar 14 09:51:07 2020
 """
 import numpy as np
 
-"""
-Remarques Amaury dans create_gameboard, tu devrais injecter j1 j2, et utiliser j1.number et j2.number plutot que marquer 1 et 2,
-des fois que t'auraix envie de changer 1 ou 2 par X et Y faut que ton code puisse fonctionner :)
-cf la remarque dans take_king de player.py
-"""
 
 
-def create_gameboard():
+def create_gameboard(j1, j2):
     '''Création d'un plateau initial avec 20 pions du joueur 1
         et 20 pions du joueur 2. Les cases 0 représentent des cases vides.
         '''
@@ -21,11 +16,11 @@ def create_gameboard():
     for k in range(4):
         for j in range(10):
             if (k+j) % 2 == 1:
-                gameboard[k][j] = 1
+                gameboard[k][j] = j1.number
     for k in range(6, 10):
         for j in range(10):
             if (k+j) % 2 == 1:
-                gameboard[k][j] = 2
+                gameboard[k][j] = j2.number
 
     return gameboard
 
@@ -37,3 +32,12 @@ def view(gameboard):
             print(index + 1, "", gameboard[index])
         else:
             print(index + 1, gameboard[index])
+
+
+def out_of_bounds(s_row, s_column, t_row, t_column):
+    if (s_row < 0 or s_row > 9) or (s_column < 0 or s_column > 9) or (t_row < 0 or t_row > 9) or (
+            t_column < 0 or t_column > 9):
+        display_message(
+            "VEUILLEZ SAISIR DES COORDONNEES SUR LE PLATEAU.", "red")
+        display_message("Allez, on recommence...", "black")
+        return True

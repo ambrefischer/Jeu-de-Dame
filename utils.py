@@ -46,4 +46,6 @@ def display_beginning():
  |_|   |_|  \___/| |\___|\__| |_____|_| |_|_| \___/   |_/_/    \_\                     
                 _/ |                                                                   
                |__/                                                                                                   
+    
+Bienvenue sur le meilleur jeu qui existe.    
     ''')

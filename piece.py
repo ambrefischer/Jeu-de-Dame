@@ -31,21 +31,18 @@ class Checker(Piece):
         super().__init__(start_row, start_column, target_row, target_column, player_number)
 
     # Effacement du pion adverse
-    """
-    oublie pas d'utiliser des constantes ici
-    """
-
     def capture(self, gameboard, make_a_move):
-        if make_a_move["target"] == "right - down":
+        if make_a_move["target"] == RIGHT_DOWN:
             gameboard[self.s_row+1][self.s_column+1] = 0
-        elif make_a_move["target"] == "left - down":
+        elif make_a_move["target"] == LEFT_DOWN:
             gameboard[self.s_row+1][self.s_column-1] = 0
-        elif make_a_move["target"] == "right - up":
+        elif make_a_move["target"] == RIGHT_UP:
             gameboard[self.s_row-1][self.s_column+1] = 0
         else:
             gameboard[self.s_row-1][self.s_column-1] = 0
 
         return gameboard
+
 
     def check_king(self):
         # Si le joueur 1 arrive tout en bas
@@ -55,21 +52,11 @@ class Checker(Piece):
         elif self.player_number == 2 and self.t_row == 0:
             return True
 
-        else:
-            return False
+        return False
 
-    '''
-    Remarques Amaury : idem regarde dans player.py ligne 100 ma remarque.
-    '''
 
     def become_king(self, gameboard):
-        # Modification du pion du joueur 1 en dame
-        if int(gameboard[self.t_row][self.t_column]) == 1:
-            gameboard[self.t_row][self.t_column] = 1.5
-        # Modification du pion du joueur 2 en dame
-        elif int(gameboard[self.t_row][self.t_column]) == 2:
-            gameboard[self.t_row][self.t_column] = 2.5
-
+        gameboard[self.t_row][self.t_column] = self.player_number + 0.5
         return gameboard
 
 

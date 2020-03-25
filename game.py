@@ -25,26 +25,6 @@ Remarques Amaury : Oublie pas de changer un peu le README, tu peux même mettre 
 exemple : https://github.com/facebook/react/blob/master/LICENSE
 """
 
-"""
-Suggestions Amo :
-1) autoriser l'utilisateur a choisir une couleur (pour afficher les textes le concernant)
-2) amélioration de l'affichage du board => plus de couleur (1 et 2 dans des couleurs différentes peut etre ?)
-tu peux aussi t'affranchir des [] et remplacer par un truc plus beau genre
-+-------------------------------------------+
-| 1 | 0 | 0 | 1 | 1 | 0 | 0 |   |   |   |   |
-+-------------------------------------------+
-| 0 | 1 |   |   |   |   |   |   |   |   |   |
-+-------------------------------------------+
-| 1 | 0 |   |   |   |   |   |   |   |   |   |
-+-------------------------------------------+
-| 0 | 2 |   |   |   |   |   |   |   |   |   |
-+-------------------------------------------+
-
-
-"""
-
-
-
 
 from piece import Checker, King
 from player import Human  # , IA
@@ -52,30 +32,33 @@ from utils import *
 from gameboard import *
 from constants import *
 from highscore import *
+
+
+
 def play_with():
     choice = input("Voulez-vous jouer contre un 'joueur' ou un 'ordi' ? ")
 
     # Selection de l'adversaire
     if choice == "joueur":
-        return Human(1, 0)
-    else:
-        display_message("Les autres modes ne sont pas encore disponibles...")
-        return Human(1, 0)
+        return Human(1, 0, 2, 1)
+
+    display_message("Les autres modes ne sont pas encore disponibles...")
+    return Human(1, 0, 2, 1)
 
 
-def initialisation():
+def initialisation(j1, j2):
     view_highscore()
 
     display_message("Let's the game begin !")
 
     # Création du plateau
-    gameboard = create_gameboard()
+    gameboard = create_gameboard(j1, j2)
     view(gameboard)
 
-    # Définition du tour du joueur
-    player_turn = {"player_number": 1.0, "status": "still playing"}
+    # Définition du tour du premier joueur
+    first_turn = {"player_number": 1.0, "status": STILL_PLAYING}
 
-    return {"player_turn": player_turn, "gameboard": gameboard}
+    return {"player_turn": first_turn, "gameboard": gameboard}
 
 
 # def continue_partie():
@@ -89,8 +72,7 @@ def who_plays(player_turn, j1, j2):
     if player_turn["player_number"] % 2 == 1.0:
         return j1
     # Tour du joueur 2
-    else:
-        return j2
+    return j2
 
 
 def choice_piece(game, make_a_move, player):

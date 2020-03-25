@@ -5,10 +5,6 @@ Created on Sun Mar 22 15:00:30 2020
 @author: Ambre
 """
 
-"""
-Remarques Amaury : tu peux retirer 'Bienvenue sur le meilleurs jeu qui existe' 
-(ou le mettre dans display_beginning si tu veux le garder)
-"""
 
 
 from game import *
@@ -16,18 +12,16 @@ import numpy as np
 
 if __name__ == "__main__":
     display_beginning()
-    display_message("Bienvenue sur le meilleur jeu qui existe.")
-
     nickname = input("Veuillez indiquer un surnom : ")
 
     j1 = play_with()
-    j2 = Human(2, 0)
+    j2 = Human(2, 0, 1, -1)
 
-    initialisation = initialisation()
+    initialisation = initialisation(j1, j2)
     player_turn = initialisation["player_turn"]
     gameboard = initialisation["gameboard"]
 
-    # Début du jeu
+    # Jeu
     while j1.score < 20 or j2.score < 20:
         play_turn(player_turn, j1, j2, gameboard)
 
