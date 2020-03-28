@@ -8,14 +8,13 @@ Created on Sun Mar 22 18:11:46 2020
 #"a" garde l'ancienne sauvegarde
 
 from utils import *
-import numpy as np
 
 
 def add_player(nickname, score):
     file = open("classement.txt", "a")
     file.write(nickname)
     file.write(" : ")
-    file.write(score)
+    file.write(str(score))
     file.write("\n")
     file.close()
     

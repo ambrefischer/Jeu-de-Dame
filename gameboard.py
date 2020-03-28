@@ -23,6 +23,7 @@ def create_gameboard(j1, j2):
             if (k+j) % 2 == 1:
                 gameboard[k][j] = j2.number
 
+
     return gameboard
 
 

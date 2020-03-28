@@ -10,6 +10,7 @@ Created on Sun Mar 22 15:00:30 2020
 from game import *
 import numpy as np
 
+
 if __name__ == "__main__":
     display_beginning()
     nickname = input("Veuillez indiquer un surnom : ")
