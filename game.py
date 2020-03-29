@@ -114,6 +114,9 @@ def play_turn(player_turn, j1, j2, gameboard):
             gameboard = piece.move(gameboard)
             gameboard = piece.capture(gameboard, make_a_move)
             player.win_one_point()
+            if not player.can_capture_again(gameboard, player.opponent_number):
+                player_turn["status"] = END_OF_TURN
+            display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
 
         #else: arreter le tour et recommencer
 

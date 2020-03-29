@@ -47,7 +47,7 @@ class Player():
         display_message("VEUILLEZ PRENDRE UNE DE VOS PIECES.", "red")
         display_message(
             "PS : Au fait, vos pions sont les %d ." % self.number, "black")
-        return {"message": "pb"}
+        return {"message": PB}
 
 
 
@@ -147,12 +147,30 @@ class Player():
                         "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
         return {"message": PB}
 
+
     def win_one_point(self):
         self.score += 1
         display_message("Le joueur %d prend un point." %
                         (self.number), "purple")
         display_message("Joueur %d ne perdez pas espoir ! Respirez... Vous pouvez le faire ;)"
                         % (self.opponent_number), "black")
+
+
+    def can_capture_again(self, gameboard):
+        if gameboard[piece.t_row+1][piece.t_column+1] == self.opponent_number \
+                and gameboard[piece.t_row+2][piece.t_column+2] == 0:
+            return True
+        elif gameboard[piece.t_row+1][piece.t_column-1] == self.opponent_number \
+                and gameboard[piece.t_row+2][piece.t_column-2] == 0:
+            return True
+        if gameboard[piece.t_row-1][piece.t_column+1] == self.opponent_number \
+                and gameboard[piece.t_row-2][piece.t_column+2] == 0:
+            return True
+        if gameboard[piece.t_row-1][piece.t_column-1] == self.opponent_number \
+                and gameboard[piece.t_row+2][piece.t_column+2] == 0:
+            return True
+        return False
+
 
 
 class Human(Player):

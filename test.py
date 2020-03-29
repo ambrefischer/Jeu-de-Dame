@@ -18,6 +18,15 @@ class TestPiece (unittest.TestCase):
         self.assertEqual(pion.t_column, 3)
         self.assertEqual(pion.player_number, 5)
 
+    def testKing(self):
+        joueur = Player(1,0,2,1)
+        board = np.zeros((10,10))
+        board[0][0] = 1.5
+        dame = King(1,1,5,5,1)
+        dame.move(board)
+        self.assertEqual(board[4][4],1.5)
+        self.assertEqual(board[0][0], 0)
+
 
 #test du déplacement
     def testmove(self):
@@ -65,9 +74,15 @@ class TestPlayer(unittest.TestCase):
         
         #test des coordonnées erronnées
         self.assertEqual(joueur.take_checker(0,2,5,5,board), {"message": PB})
-        
-         
 
+        #test de l'incrémentation du score
+    def testwin_one_point(self):
+        joueur = Player(1,3,2,1)
+        joueur.win_one_point()
+        self.assertEqual(joueur.score, 4)
+         
+    
+        
         
         
         
