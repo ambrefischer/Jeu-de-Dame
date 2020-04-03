@@ -3,6 +3,8 @@ Ce programme a été fait par Ambre Fischer de GUillebon et Charles Fortier dans
 le cadre d'un projet informatique en 1ère année à l'ENSTA Bretagne.
 Ce programme reproduit un jeu de dames.
 
+Pour lancer le programme, il suffit de faire tourner le fichier 'start.py'
+
 
 MIT License
 

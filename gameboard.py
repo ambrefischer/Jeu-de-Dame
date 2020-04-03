@@ -7,24 +7,30 @@ Created on Sat Mar 14 09:51:07 2020
 import numpy as np
 from utils import *
 
-
-
 def create_gameboard(j1, j2):
-    '''Création d'un plateau initial avec 20 pions du joueur 1
-        et 20 pions du joueur 2. Les cases 0 représentent des cases vides.
-        '''
     gameboard = np.zeros((10, 10))
-    for k in range(4):
-        for j in range(10):
-            if (k+j) % 2 == 1:
-                gameboard[k][j] = j1.number
-    for k in range(6, 10):
-        for j in range(10):
-            if (k+j) % 2 == 1:
-                gameboard[k][j] = j2.number
-
-
+    gameboard[0][0] = 1.5
+    gameboard[1][1] = 2
+    gameboard[3][3] = 2
+    gameboard[5][3] = 2
     return gameboard
+
+# def create_gameboard(j1, j2):
+#     '''Création d'un plateau initial avec 20 pions du joueur 1
+#         et 20 pions du joueur 2. Les cases 0 représentent des cases vides.
+#         '''
+#     gameboard = np.zeros((10, 10))
+#     for k in range(4):
+#         for j in range(10):
+#             if (k+j) % 2 == 1:
+#                 gameboard[k][j] = j1.number
+#     for k in range(6, 10):
+#         for j in range(10):
+#             if (k+j) % 2 == 1:
+#                 gameboard[k][j] = j2.number
+#
+#
+#     return gameboard
 
 
 def view(gameboard):

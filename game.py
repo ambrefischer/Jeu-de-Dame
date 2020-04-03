@@ -49,15 +49,9 @@ def initialisation(j1, j2):
     view(gameboard)
 
     # Définition du tour du premier joueur
-    first_turn = {"player_number": 1.0, "status": STILL_PLAYING}
+    first_turn = {"player_number": 1.0, "status": None}
 
     return {"player_turn": first_turn, "gameboard": gameboard}
-
-
-# def continue_partie():
-#    choice = input("Voulez-vous continuer la partie")
-#    if choice == "oui":
-#
 
 
 def who_plays(player_turn, j1, j2):
@@ -68,13 +62,13 @@ def who_plays(player_turn, j1, j2):
     return j2
 
 
-def choice_piece(game, make_a_move, player):
+def choice_piece(coords, make_a_move, player):
     if make_a_move["type"] == CHECKER:
-        piece = Checker(game["s_row"], game["s_column"],
-                        game["t_row"], game["t_column"], player.number)
+        piece = Checker(coords["s_row"], coords["s_column"],
+                        coords["t_row"], coords["t_column"], player.number)
     else:
-        piece = King(game["s_row"], game["s_column"],
-                     game["t_row"], game["t_column"], player.number)
+        piece = King(coords["s_row"], coords["s_column"],
+                     coords["t_row"], coords["t_column"], player.number)
     return piece
 
 
@@ -82,49 +76,106 @@ def play_turn(player_turn, j1, j2, gameboard):
     # Détermination de à qui le tour
     player = who_plays(player_turn, j1, j2)
 
-    # Le joueur peut rejouer s'il mange un pion adverse.
-    while player_turn["status"] == STILL_PLAYING:
-        display_message(
-            "Joueur %d, à vous de jouer. Votre score est de %d."
-            % (player.number, player.score)
-        )
+    display_message(
+        "Joueur %d, à vous de jouer. Votre score est de %d."
+        % (player.number, player.score)
+    )
 
-        # Choix du déplacement
-        game = player.play(gameboard)
-        make_a_move = player.one_turn(game["s_row"], game["s_column"],
-                                      game["t_row"], game["t_column"], gameboard)
+    # Choix du déplacement
+    coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
+              "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+    make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
+                                  coords["t_row"], coords["t_column"], gameboard)
 
-        # Problème dans les coordonnées
-        while make_a_move["message"] == PB:
-            view(gameboard)
-            game = player.play(gameboard)
-            make_a_move = player.one_turn(game["s_row"], game["s_column"],
-                                          game["t_row"], game["t_column"], gameboard)
+    # Problème dans les coordonnées
+    while make_a_move["message"] == PB:
+        view(gameboard)
+        coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
+                  "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+        make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
+                                      coords["t_row"], coords["t_column"], gameboard)
 
-        # Acceptation des coordonnées : la pièce est un pion ou une dame
-        piece = choice_piece(game, make_a_move, player)
+    # Acceptation des coordonnées : la pièce est un pion ou une dame
+    piece = choice_piece(coords, make_a_move, player)
 
-        # Si le joueur désire se déplacer.
-        if make_a_move["message"] == I_M_ON_MY_WAY:
-            gameboard = piece.move(gameboard)
-            player_turn["status"] = END_OF_TURN
+    # Si le joueur désire se déplacer.
+    if make_a_move["message"] == I_M_ON_MY_WAY:
+        gameboard = piece.move(gameboard)
 
-        # Ou le joueur désire manger un pion adverse.
-        elif make_a_move["message"] == I_CAPTURE:
-            gameboard = piece.move(gameboard)
-            gameboard = piece.capture(gameboard, make_a_move)
-            player.win_one_point()
-            if not player.can_capture_again(gameboard, player.opponent_number):
-                player_turn["status"] = END_OF_TURN
+    # Ou le joueur désire manger un pion adverse.
+    elif make_a_move["message"] == I_CAPTURE:
+        gameboard = piece.move(gameboard)
+        gameboard = piece.capture(gameboard, make_a_move)
+        player.win_one_point()
+        #Vérification si le joueur peut rejouer
+        #avec son pion.
+        if make_a_move["type"] == CHECKER:
+            play_again = player.can_capture_again_with_checker(gameboard, coords["t_row"], coords["t_column"])
+            if play_again["bool"] == True:
+                player_turn["status"] = STILL_PLAYING
+                display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
+        #avec sa dame.
+        play_again = player.can_capture_again_with_king(gameboard, coords["t_row"], coords["t_column"])
+        if play_again["bool"] == True:
+            player_turn["status"] = STILL_PLAYING
             display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
 
-        #else: arreter le tour et recommencer
 
+    # Vérification si le pion ne devient pas une dame
+    if make_a_move["type"] == CHECKER and piece.check_king():
+        gameboard = piece.become_king(gameboard)
 
-        # Vérification si le pion ne devient pas une dame
-        if make_a_move["type"] == CHECKER and piece.check_king():
-            gameboard = piece.become_king(gameboard)
-
+    if player_turn["status"] == STILL_PLAYING:
         view(gameboard)
-    player_turn["player_number"] += 1
-    player_turn["status"] = STILL_PLAYING
+        play_turn_again(play_again, player_turn, player, coords["t_row"], coords["t_column"], gameboard)
+
+    player_turn["status"] = END_OF_TURN
+
+
+
+def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard):
+    coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+    make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"], gameboard)
+
+    while make_another_move["message"] == PB or make_another_move["target"] != play_again["target"]:
+        display_message("Vous êtes obligé de manger une pièce adverse.")
+        view(gameboard)
+        coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+        make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"], gameboard)
+
+
+    # Acceptation des coordonnées : la pièce est un pion ou une dame
+    coords_again_all = {"s_row": s_row, "s_column": s_column, "t_row": coords_again["t_row"], "t_column": coords_again["t_column"]}
+    piece = choice_piece(coords_again_all, make_another_move, player)
+
+    #Le joueur mange forcément l'adversaire.
+    gameboard = piece.move(gameboard)
+    gameboard = piece.capture(gameboard, make_another_move)
+    player.win_one_point()
+
+    #Le tour s'arrête si le joueur ne peut plus rejouer.
+    #la pièce a rejouer est un pion
+    if make_another_move["type"] == CHECKER:
+        play_again = player.can_capture_again_with_checker(gameboard, coords_again["t_row"], coords_again["t_column"])
+        if not play_again["bool"] == True:
+            player_turn["status"] = END_OF_TURN
+            display_message("Vous avez fini votre tour.")
+            display_message("Joueur %d, votre score est de %d." % (player.number, player.score))
+    #la piece à rejouer est une dame
+    play_again = player.can_capture_again_with_king(gameboard, coords_again["t_row"], coords_again["t_column"])
+    if not play_again["bool"] == True:
+        player_turn["status"] = END_OF_TURN
+        display_message("Vous avez fini votre tour.")
+        display_message("Joueur %d, votre score est de %d." % (player.number, player.score))
+
+
+    # Vérification si le pion ne devient pas une dame
+    if make_another_move["type"] == CHECKER and piece.check_king():
+        gameboard = piece.become_king(gameboard)
+
+    #rejouer si on peut
+    while player_turn["status"] == STILL_PLAYING:
+        display_message("Vous pouvez rejouer avec le même pion uniquement pour manger")
+        view(gameboard)
+        play_turn_again(play_again, player_turn, player, coords_again["t_row"], coords_again["t_column"], gameboard)
+

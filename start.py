@@ -25,6 +25,8 @@ if __name__ == "__main__":
     # Jeu
     while j1.score < 20 or j2.score < 20:
         play_turn(player_turn, j1, j2, gameboard)
+        view(gameboard)
+        player_turn["player_number"] += 1
 
     # Comdition de gagne
     if j1.score < j2.score:

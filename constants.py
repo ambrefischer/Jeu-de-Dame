@@ -19,4 +19,3 @@ RIGHT_DOWN = "right - down"
 RIGHT_UP = "right - up"
 LEFT_DOWN = "left - down"
 LEFT_UP = "left - up"
-

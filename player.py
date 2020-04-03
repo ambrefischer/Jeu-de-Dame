@@ -8,9 +8,6 @@ from utils import *
 from gameboard import *
 from constants import *
 
-"""
-Remarques Amaury : On fait trés souvent un fichier par classe (tu peux créer un dossier Players, et mettre dedans Player.py, Human.py)
-"""
 
 
 class Player():
@@ -21,7 +18,7 @@ class Player():
         self.factor = factor
 
     # Cette fonction verifie que c'est le bon joueur et que la case est bonne
-    def one_turn(self, start_row, start_column, target_row, target_column, gameboard):
+    def check_coords(self, start_row, start_column, target_row, target_column, gameboard):
         s_row = start_row - 1
         s_column = start_column - 1
         t_row = target_row - 1
@@ -56,7 +53,7 @@ class Player():
         # Le joueur le met dans une case acceptée pour bouger (en bas pour j1, en haut pour j2).
         if t_row == s_row+self.factor and (t_column == s_column+1 or t_column == s_column-1) \
                 and int(gameboard[t_row][t_column]) == 0:
-            return {"message": I_M_ON_MY_WAY, "type": CHECKER}
+            return {"message": I_M_ON_MY_WAY, "target": None, "type": CHECKER}
 
         # Le joueur le met sur une case acceptée pour manger.
         elif (t_row == s_row+2 and t_column == s_column+2) \
@@ -85,7 +82,7 @@ class Player():
             "VOUS NE POUVEZ PAS PLACER VOTRE PION ICI. RECOMMENCEZ.", "red")
         display_message("PS : Faut lire les règles du jeu..." + "\n" +
                         "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
-        return {"message": "pb"}
+        return {"message": PB}
 
 
     def where_king(self, s_row, s_column, t_row, t_column):
@@ -124,10 +121,10 @@ class Player():
                 elif where_king == LEFT_DOWN and (gameboard[row_down][col_left] == self.opponent_number\
                         or gameboard[row_down][col_left] == self.opponent_number+0.5):
                     count_capture.append([row_down, col_left])
-            print(count_capture)
+
             # Vérification que la dame ne prenne qu'un pion à la fois.
             if len(count_capture) == 1:
-                return {"message": I_CAPTURE, "opponent_row": count_capture[0][0],
+                return {"message": I_CAPTURE, "target": where_king, "opponent_row": count_capture[0][0],
                         "opponent_col": count_capture[0][1], "type": KING}
             elif len(count_capture) > 1:
                 display_message(
@@ -137,7 +134,7 @@ class Player():
                 return {"message": PB}
 
             # Si la dame ne mange aucun pion alors elle se déplace juste.
-            return {"message": I_M_ON_MY_WAY, "type": KING}
+            return {"message": I_M_ON_MY_WAY, "target": None, "type": KING}
 
         # Le joueur ne mets pas de bonnes coordonnées.
 
@@ -156,20 +153,62 @@ class Player():
                         % (self.opponent_number), "black")
 
 
-    def can_capture_again(self, gameboard):
-        if gameboard[piece.t_row+1][piece.t_column+1] == self.opponent_number \
-                and gameboard[piece.t_row+2][piece.t_column+2] == 0:
-            return True
-        elif gameboard[piece.t_row+1][piece.t_column-1] == self.opponent_number \
-                and gameboard[piece.t_row+2][piece.t_column-2] == 0:
-            return True
-        if gameboard[piece.t_row-1][piece.t_column+1] == self.opponent_number \
-                and gameboard[piece.t_row-2][piece.t_column+2] == 0:
-            return True
-        if gameboard[piece.t_row-1][piece.t_column-1] == self.opponent_number \
-                and gameboard[piece.t_row+2][piece.t_column+2] == 0:
-            return True
-        return False
+    def can_capture_again_with_checker(self, gameboard, s_row, s_column):
+        s_row -= 1
+        s_column -= 1
+        if gameboard[s_row+1][s_column+1] == self.opponent_number \
+                and gameboard[s_row+2][s_column+2] == 0:
+            return {"bool": True, "target": RIGHT_DOWN}
+        elif gameboard[s_row+1][s_column-1] == self.opponent_number \
+                and gameboard[s_row+2][s_column-2] == 0:
+            print("checker dl")
+            return {"bool": True, "target": LEFT_DOWN}
+        elif gameboard[s_row-1][s_column+1] == self.opponent_number \
+                and gameboard[s_row-2][s_column+2] == 0:
+            print("checker ur")
+            return {"bool": True, "target": RIGHT_UP}
+        elif gameboard[s_row-1][s_column-1] == self.opponent_number \
+                and gameboard[s_row-2][s_column-2] == 0:
+            print("checker ul")
+            return {"bool": True, "target": LEFT_UP}
+        return {"bool": False, "target": None}
+
+    def can_capture_again_with_king(self, gameboard, s_row, s_column):
+        s_row -= 1
+        s_column -= 1
+        #check en descendant sur le plateau
+        column_right = s_column
+        column_left = s_column
+        for row in range(s_row, 10):
+            if gameboard[row][column_right] == self.opponent_number \
+                    and gameboard[row+1][column_right+1] == 0:
+                print("king dr")
+                return {"bool": True, "target": RIGHT_DOWN}
+            elif gameboard[row][column_left] == self.opponent_number \
+                    and gameboard[row+1][column_left-1] == 0:
+                print("king dl")
+                return {"bool": True, "target": LEFT_DOWN}
+            column_right +=1
+            column_left -= 1
+
+        #check en montant sur le plateau
+        column_right = s_column
+        column_left = s_column
+        for row in range(s_row-1, -1, -1):
+            if gameboard[row][column_right] == self.opponent_number \
+                    and gameboard[row+1][column_right+1] == 0:
+                print("king ur")
+                return {"bool": True, "target": RIGHT_UP}
+            elif gameboard[row][column_left] == self.opponent_number \
+                    and gameboard[row+1][column_left-1] == 0:
+                print("king ul")
+                return {"bool": True, "target": LEFT_UP}
+            column_right +=1
+            column_left -= 1
+
+        return {"bool": False, "target": None}
+
+
 
 
 
@@ -178,9 +217,8 @@ class Human(Player):
         super().__init__(number, score, opponent_number, factor)
 
     # Cette fonction a pour but de demander au joueur ce qu'il veut faire pendant son tour.
-    def play(self, gameboard):
+    def choose_s_row(self, gameboard):
         print("Les lignes et les colonnes commencent à 1 !")
-
         while True:
            try:
                start_row = int(
@@ -188,11 +226,13 @@ class Human(Player):
                break
            except ValueError:
                display_message(
-                   "Veuillez rentrer des coordonnée de cases.", "red")
+                   "Veuillez rentrer des coordonnées de cases.", "red")
                display_message(
                    "Les lignes et les colonnes commencent à 1 !", "black")
                view(gameboard)
+        return start_row
 
+    def choose_s_column(self, gameboard):
         while True:
             try:
                 start_column = int(
@@ -200,11 +240,13 @@ class Human(Player):
                 break
             except ValueError:
                 display_message(
-                    "Veuillez rentrer des coordonnée de cases.", "red")
+                    "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
+        return start_column
 
+    def choose_t_row(self, gameboard):
         while True:
             try:
                 target_row = int(
@@ -212,11 +254,13 @@ class Human(Player):
                 break
             except ValueError:
                 display_message(
-                    "Veuillez rentrer des coordonnée de cases.", "red")
+                    "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
+        return target_row
 
+    def choose_t_column(self, gameboard):
         while True:
             try:
                 target_column = int(
@@ -224,13 +268,11 @@ class Human(Player):
                 break
             except ValueError:
                 display_message(
-                    "Veuillez rentrer des coordonnée de cases.", "red")
+                    "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
+        return target_column
 
-        return {"s_row": start_row, "s_column": start_column,
-                "t_row": target_row, "t_column": target_column
-                }
 
 # class IA():
