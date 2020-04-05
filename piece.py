@@ -33,10 +33,10 @@ class Piece():
             Sur le plateau, les dames correspondent à player_number+0.5.
         """
 
-        self.s_row = start_row - 1
-        self.s_column = start_column - 1
-        self.t_row = target_row - 1
-        self.t_column = target_column - 1
+        self.s_row = start_row
+        self.s_column = start_column
+        self.t_row = target_row
+        self.t_column = target_column
         self.player_number = player_number
 
 

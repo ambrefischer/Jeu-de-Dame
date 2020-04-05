@@ -43,16 +43,16 @@ class Player():
         self.factor = factor
 
 
-    def check_coords(self, start_row, start_column, target_row, target_column, gameboard):
+    def check_coords(self, s_row, s_column, t_row, t_column, gameboard):
         """
         Cette fonction verifie que c'est le bon joueur et que la case est bonne.
 
         Paramètres
         ----------
-        start_row, start_column: int
+        s_row, s_column: int
             Coordonnées de la pièce à bouger.
 
-        target_row, target_column: int
+        t_row, t_column: int
             Coordonnées de la case où mettre la pièce.
 
         gameboard: array
@@ -65,16 +65,6 @@ class Player():
         ou appelle la fonction take_checker,
         ou appelle la fonction take_king.
         """
-
-        #Le joueur rentre des coordonnées de 1 à 10.
-        #gameboard est un tableau 10x10 avec les lignes
-        #et les colonnes commençant à 0 finissant à 9.
-        #On décrémente donc les coordonnées entrées par le joueur.
-        s_row = start_row - 1
-        s_column = start_column - 1
-        t_row = target_row - 1
-        t_column = target_column - 1
-
 
         # Mauvaise entrée des coordonnées : hors plateau
         if out_of_bounds(s_row, s_column, t_row, t_column):
@@ -333,13 +323,6 @@ class Player():
 
         """
 
-        # Le joueur rentre des coordonnées de 1 à 10.
-        # gameboard est un tableau 10x10 avec les lignes
-        # et les colonnes commençant à 0 finissant à 9.
-        # On décrémente donc les coordonnées entrées par le joueur.
-        s_row -= 1
-        s_column -= 1
-
         #On vérifie les cases en diagonales voisines si elles sont occupées par une pièce adverse
         # et que la case encore après est vide.
         #En bas à droite
@@ -401,13 +384,6 @@ class Player():
         Il ne peut rejouer que si il peut reprendre une pièce adverse.
         """
 
-        # Le joueur rentre des coordonnées de 1 à 10.
-        # gameboard est un tableau 10x10 avec les lignes
-        # et les colonnes commençant à 0 finissant à 9.
-        # On décrémente donc les coordonnées entrées par le joueur.
-        s_row -= 1
-        s_column -= 1
-
         #Vérification en descendant sur le plateau
         col_right = s_column
         col_left = s_column
@@ -460,6 +436,16 @@ class Player():
 
 
 class Human(Player):
+    '''
+    La classe Human hérite de la classe Player.
+    Human possède 4 méthodes qui demandent à l'utilisateur de choisir les coordonnées
+    de la pièce à déplacer (s_row pour start row, s_column pour start column) et les
+    coordonnées de la case ciblée (t_row pour target row, t_column pour target column).
+    Le joueur rentre des coordonnées de 1 à 10 or gameboard est un tableau 10x10 avec
+    les lignes et les colonnes commençant à 0 finissant à 9.
+    On décrémente donc de 1 les coordonnées entrées par le joueur.
+    '''
+
     def __init__(self, number, score, opponent_number, factor):
         super().__init__(number, score, opponent_number, factor)
 
@@ -496,7 +482,7 @@ class Human(Player):
                display_message(
                    "Les lignes et les colonnes commencent à 1 !", "black")
                view(gameboard)
-        return start_row
+        return start_row - 1
 
 
     def choose_s_column(self, gameboard):
@@ -531,7 +517,7 @@ class Human(Player):
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
 
-        return start_column
+        return start_column - 1
 
 
     def choose_t_row(self, gameboard):
@@ -565,7 +551,8 @@ class Human(Player):
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
-        return target_row
+
+        return target_row - 1
 
 
     def choose_t_column(self, gameboard):
@@ -599,7 +586,8 @@ class Human(Player):
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
-        return target_column
+
+        return target_column - 1
 
 
 
