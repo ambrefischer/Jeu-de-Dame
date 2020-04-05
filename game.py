@@ -267,6 +267,7 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
 
     #Si les coordonnées ne remplissent pas les conditions du jeu ou bien que le joueur décide de ne pas jouer
     # le coup obligatoire alors il doit redonner des coordonnées.
+    print(play_again)
     while make_another_move["message"] == PB or (\
             make_another_move["target"] != play_again["target_rd"] \
             and make_another_move["target"] != play_again["target_ld"] \

@@ -394,52 +394,62 @@ class Player():
         Il ne peut rejouer que si il peut reprendre une pièce adverse.
         """
 
-        #Vérification en descendant sur le plateau
+        #On considère au début qu'on ne remplit aucune condition.
+        play_again = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
+
+        #Vérification en descendant sur le plateau en faisant attention aux limites.
         col_right = s_column
         col_left = s_column
         row = s_row
-        #En bas
-        while row < 9 and col_right < 9 and col_left > 0:
+
+        while row < 9:
             #A droite
-            if (gameboard[row][col_right] == self.opponent_number \
+            if col_right < 9 \
+                    and (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
                     and gameboard[row+1][col_right+1] == 0:
-                return {"bool": True, "target": RIGHT_DOWN}
+                play_again["bool"] = True
+                play_again["target_rd"] = RIGHT_DOWN
 
             #A gauche
-            elif (gameboard[row][col_left] == self.opponent_number \
+            if col_left > 0 \
+                    and (gameboard[row][col_left] == self.opponent_number \
                     or gameboard[row][col_left] == self.opponent_number+0.5) \
                     and gameboard[row+1][col_left-1] == 0:
-                return {"bool": True, "target": LEFT_DOWN}
+                play_again["bool"] = True
+                play_again["target_ld"] = LEFT_DOWN
 
             col_right +=1
             col_left -= 1
             row += 1
 
-        #Vérification en montant sur le plateau
+        #Vérification en montant sur le plateau en faisant attention aux limites.
         col_right = s_column
         col_left = s_column
         row = s_row
-        #En haut
-        while row < 9 and col_right < 9 and col_left > 0:
+
+        while row > 0:
             #A droite
-            if (gameboard[row][col_right] == self.opponent_number \
+            if col_right < 9 \
+                    and (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
                     and gameboard[row-1][col_right+1] == 0:
-                return {"bool": True, "target": RIGHT_UP}
+                play_again["bool"] = True
+                play_again["target_ru"] = RIGHT_UP
 
             #A gauche
-            elif (gameboard[row][col_left] == self.opponent_number \
+            if col_left > 0 \
+                    and (gameboard[row][col_left] == self.opponent_number \
                     or gameboard[row][col_left] == self.opponent_number+0.5) \
                     and gameboard[row-1][col_left-1] == 0:
-                return {"bool": True, "target": LEFT_UP}
+                play_again["bool"] = True
+                play_again["target_lu"] = LEFT_UP
 
             col_right +=1
             col_left -= 1
             row -= 1
 
-        #Il n'y a aucune cible possible.
-        return {"bool": False, "target": None}
+        return play_again
 
 
 
