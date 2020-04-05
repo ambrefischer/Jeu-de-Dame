@@ -327,30 +327,34 @@ class Player():
         play_again = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
 
         #On vérifie les cases en diagonales voisines si elles sont occupées par une pièce adverse
-        # et que la case encore après est vide.
+        # et que la case encore après est vide en faisant attention aux limites du terrain.
         #En bas à droite
-        if (gameboard[s_row+1][s_column+1] == self.opponent_number \
+        if (s_row < 8 and s_column > 1) \
+                and (gameboard[s_row+1][s_column+1] == self.opponent_number \
                 or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5)\
                 and gameboard[s_row+2][s_column+2] == 0:
             play_again["bool"] = True
             play_again["target_rd"] = RIGHT_DOWN
 
         #En bas à gauche
-        if (gameboard[s_row+1][s_column-1] == self.opponent_number \
+        if (s_row < 8 and s_column > 1) \
+                and (gameboard[s_row+1][s_column-1] == self.opponent_number \
                 or gameboard[s_row+1][s_column-1] == self.opponent_number+0.5) \
                 and gameboard[s_row+2][s_column-2] == 0:
             play_again["bool"] = True
             play_again["target_ld"] = LEFT_DOWN
 
         #En haut à droite
-        if (gameboard[s_row-1][s_column+1] == self.opponent_number \
+        if (s_row > 1 and s_column < 8) \
+                and (gameboard[s_row-1][s_column+1] == self.opponent_number \
                 or gameboard[s_row-1][s_column+1] == self.opponent_number+0.5) \
                 and gameboard[s_row-2][s_column+2] == 0:
             play_again["bool"] = True
             play_again["target_ru"] = RIGHT_UP
 
         #En haut à gauche
-        if (gameboard[s_row-1][s_column-1] == self.opponent_number \
+        if (s_row > 1 and s_column > 1) \
+                and (gameboard[s_row-1][s_column-1] == self.opponent_number \
                 or gameboard[s_row-1][s_column-1] == self.opponent_number+0.5) \
                 and gameboard[s_row-2][s_column-2] == 0:
             play_again["bool"] = True
