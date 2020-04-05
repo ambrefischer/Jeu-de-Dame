@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar 22 15:00:30 2020
+Project : Jeu de Dames
 
-@author: Ambre
+@authors: Ambre Fischer & Charles Fortier (groupe TD 2)
+
+Ce fichier est à faire tourner pour lancer le programme.
 """
-
 
 
 from game import *

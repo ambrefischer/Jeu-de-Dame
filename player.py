@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 14 09:51:23 2020
+Project : Jeu de Dames
 
-@author: Ambre
+@authors: Ambre Fischer & Charles Fortier (groupe TD 2)
 """
+
 from utils import *
 from gameboard import *
 from constants import *
@@ -11,14 +12,64 @@ from constants import *
 
 
 class Player():
+    '''
+    Cette classe décrit le comportement des joueurs. L'utilisateur suit le comportement de Human
+    et il peut choisir de jouer contre quelqu'un d'autre sous forme de Human ou une IA.
+    '''
+
     def __init__(self, number, score, opponent_number, factor):
+        """
+        Crée un joueur avec ses propres caractéristiques tout en mémorisant le numéro adverse.
+
+        Paramètres
+        ----------
+        number, score: int
+            Caractérise les paramètres propres du joueur.
+
+        factor: int
+            Les joueurs ne peuvent jouer que dans un sens. Le joueur 1 ne pourra que descendre
+            avec ses pions. Son facteur sera +1. Le joueur 2 ne pourra que monter avec ses pions.
+            Son facteur sera -1.
+
+        opponent_number: int
+            Enregistre le numéro de l'adversaire contre qui le joueur se bat.
+            Sur le plateau, les pions adverses correspondent à opponent_number.
+            Sur le plateau, les dames adverses correspondent à opponent_number+0.5.
+        """
+
         self.number = number
         self.score = score
         self.opponent_number = opponent_number
         self.factor = factor
 
-    # Cette fonction verifie que c'est le bon joueur et que la case est bonne
+
     def check_coords(self, start_row, start_column, target_row, target_column, gameboard):
+        """
+        Cette fonction verifie que c'est le bon joueur et que la case est bonne.
+
+        Paramètres
+        ----------
+        start_row, start_column: int
+            Coordonnées de la pièce à bouger.
+
+        target_row, target_column: int
+            Coordonnées de la case où mettre la pièce.
+
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        {"message" = PB}: dict
+            Les coordonnées ne respectent pas les règles du jeu,
+        ou appelle la fonction take_checker,
+        ou appelle la fonction take_king.
+        """
+
+        #Le joueur rentre des coordonnées de 1 à 10.
+        #gameboard est un tableau 10x10 avec les lignes
+        #et les colonnes commençant à 0 finissant à 9.
+        #On décrémente donc les coordonnées entrées par le joueur.
         s_row = start_row - 1
         s_column = start_column - 1
         t_row = target_row - 1
@@ -47,30 +98,68 @@ class Player():
         return {"message": PB}
 
 
-
     def take_checker(self, s_row, s_column, t_row, t_column, gameboard):
+        """
+        Détermine le type de mouvement voulu par le joueur avec son pion.
+
+        Paramètres
+        ----------
+        s_row, s_column: int
+            Coordonnées de la pièce à bouger.
+
+        t_row, t_column: int
+            Coordonnées de la case où mettre la pièce.
+
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        dict
+            "message": str
+                indique le mouvement voulu.
+                    I_M_ON_MY_WAY: Le pion se déplace juste.
+                    I_CAPTURE: Le pion prend une pièce adverse.
+                    PB: Les coordonnées ne respectent pas les règles du jeu.
+            "target": str
+                indique la direction et le sens du pion adverse à prendre.
+                    None: pas de pièce adverse pour un simple déplacement.
+                    RIGHT_DOWN: La pièce adverse ciblée se situe en bas à droite.
+                    LEFT_DOWN: La pièce adverse ciblée se situe en bas à gauche.
+                    RIGHT_UP: La pièce adverse ciblée se situe en haut à droite.
+                    LEFT_UP: La pièce adverse ciblée se situe en haut à gauche.
+            "type": str
+                indique que la pièce est un Checker.
+        """
 
         # Le joueur le met dans une case acceptée pour bouger (en bas pour j1, en haut pour j2).
         if t_row == s_row+self.factor and (t_column == s_column+1 or t_column == s_column-1) \
                 and int(gameboard[t_row][t_column]) == 0:
             return {"message": I_M_ON_MY_WAY, "target": None, "type": CHECKER}
 
-        # Le joueur le met sur une case acceptée pour manger.
+        # Le joueur le met sur une case acceptée pour manger: 4 cas différents.
+        #En bas à droite
         elif (t_row == s_row+2 and t_column == s_column+2) \
                 and int(gameboard[t_row][t_column]) == 0 \
                 and (int(gameboard[s_row+1][s_column+1]) == self.opponent_number \
                 or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": RIGHT_DOWN, "type": CHECKER}
+
+        #En bas à gauche
         elif (t_row == s_row+2 and t_column == s_column-2) \
                 and int(gameboard[t_row][t_column]) == 0 \
                 and (int(gameboard[s_row+1][s_column-1]) == self.opponent_number \
                 or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": LEFT_DOWN, "type": CHECKER}
+
+        #En haut à droite
         elif (t_row == s_row-2 and t_column == s_column+2) \
                 and int(gameboard[t_row][t_column]) == 0 \
                 and (int(gameboard[s_row-1][s_column+1]) == self.opponent_number\
                 or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": RIGHT_UP, "type": CHECKER}
+
+        #En haut à gauche
         elif (t_row == s_row-2 and t_column == s_column-2) \
                 and int(gameboard[t_row][t_column]) == 0 \
                 and (int(gameboard[s_row-1][s_column-1]) == self.opponent_number\
@@ -86,6 +175,26 @@ class Player():
 
 
     def where_king(self, s_row, s_column, t_row, t_column):
+        """
+        Détermine la direction et le sens de la diagonale de mouvement de la dame.
+
+        Paramètres
+        ----------
+        s_row, s_column: int
+            Coordonnées de la pièce à bouger.
+
+        t_row, t_column: int
+            Coordonnées de la case où mettre la pièce.
+
+        Renvoie
+        -------
+        s: str
+            RIGHT_DOWN: La dame se dirige vers en bas à droite.
+            LEFT_DOWN: La dame se dirige vers en bas à gauche.
+            RIGHT_UP: La dame se dirige vers en haut à droite.
+            LEFT_UP: La dame se dirige vers en haut à gauche.
+        """
+
         if s_row < t_row :
             if s_column < t_column :
                 return RIGHT_DOWN
@@ -96,14 +205,49 @@ class Player():
 
 
     def take_king(self, s_row, s_column, t_row, t_column, gameboard, where_king):
+        """
+        Détermine le type de mouvement voulu par le joueur avec sa dame.
+
+        Paramètres
+        ----------
+        s_row, s_column: int
+            Coordonnées de la pièce à bouger.
+
+        t_row, t_column: int
+            Coordonnées de la case où mettre la pièce.
+
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        where_king: str
+            Indique la direction et le sens pris par le mouvement de la dame.
+            Est déterminé en faisant appel à la fonction where_king
+
+        Renvoie
+        -------
+        d: dict
+            "message": str
+                indique le mouvement voulu.
+                    I_M_ON_MY_WAY: La dame se déplace juste.
+                    I_CAPTURE: La dame prend une pièce adverse.
+                    PB: Les coordonnées ne respectent pas les règles du jeu.
+            "target": str
+                indique la direction et le sens du pion adverse à prendre.
+                    where_king: la méthode du même nom indique par un str la direction et le sens
+                    None: pas de pièce adverse pour un simple déplacement.
+            "opponent_row", "opponenent_column": int
+                indique les coordonnées du pion adverse à prendre.
+            "type": str
+                indique le que la pièce est un King.
+        """
 
         # Le joueur la met sur une case acceptée pour bouger : une case sur une diagonale.
         factor_king = abs(t_row - s_row)
         if abs(t_column - s_column) == factor_king and int(gameboard[t_row][t_column]) == 0:
 
-            # La dame mange-t-elle un pion au passage?
+            # La dame mange-t-elle une pièce au passage?
             count_capture = []
-            # On parcourt toute la diagonale pour savoir combien de pions elle mange
+            # On parcourt toute la diagonale pour savoir combien de pièces elle mange
             for distance in range(factor_king):
                 row_down = s_row + distance
                 row_up = s_row - distance
@@ -137,7 +281,6 @@ class Player():
             return {"message": I_M_ON_MY_WAY, "target": None, "type": KING}
 
         # Le joueur ne mets pas de bonnes coordonnées.
-
         display_message(
             "VOUS NE POUVEZ PAS PLACER VOTRE DAME ICI. RECOMMENCEZ.", "red")
         display_message("PS : Faut lire les règles du jeu..." + "\n" +
@@ -146,6 +289,14 @@ class Player():
 
 
     def win_one_point(self):
+        """
+        Cette fonction augmente le score d'un joueur lorsqu'il prend une pièce adverse.
+
+        Paramètres
+        ----------
+        Aucun
+        """
+
         self.score += 1
         display_message("Le joueur %d prend un point." %
                         (self.number), "purple")
@@ -154,58 +305,150 @@ class Player():
 
 
     def can_capture_again_with_checker(self, gameboard, s_row, s_column):
+        """
+        On est dans le cas où le joueur vient de prendre une pièce adverse avec son pion.
+        Il ne peut rejouer que si il peut reprendre une pièce adverse.
+        Cette fonction détermine si le joueur peut rejouer.
+
+        Paramètres
+        ----------
+        s_row, s_column: int
+            Coordonnées de la pièce à bouger.
+
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        dict
+            "bool": bool
+                indique si le joueur est dans les conditions pour rejouer.
+            "target": str
+                indique la direction et le sens du pion adverse à prendre.
+                    None: pas de pièce adverse pour un simple déplacement.
+                    RIGHT_DOWN: La pièce adverse ciblée se situe en bas à droite.
+                    LEFT_DOWN: La pièce adverse ciblée se situe en bas à gauche.
+                    RIGHT_UP: La pièce adverse ciblée se situe en haut à droite.
+                    LEFT_UP: La pièce adverse ciblée se situe en haut à gauche.
+
+        """
+
+        # Le joueur rentre des coordonnées de 1 à 10.
+        # gameboard est un tableau 10x10 avec les lignes
+        # et les colonnes commençant à 0 finissant à 9.
+        # On décrémente donc les coordonnées entrées par le joueur.
         s_row -= 1
         s_column -= 1
-        if gameboard[s_row+1][s_column+1] == self.opponent_number \
+
+        #On vérifie les cases en diagonales voisines si elles sont occupées par une pièce adverse
+        # et que la case encore après est vide.
+        #En bas à droite
+        if (gameboard[s_row+1][s_column+1] == self.opponent_number \
+                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5)\
                 and gameboard[s_row+2][s_column+2] == 0:
             return {"bool": True, "target": RIGHT_DOWN}
-        elif gameboard[s_row+1][s_column-1] == self.opponent_number \
+
+        #En bas à gauche
+        elif (gameboard[s_row+1][s_column-1] == self.opponent_number \
+                or gameboard[s_row+1][s_column-1] == self.opponent_number+0.5) \
                 and gameboard[s_row+2][s_column-2] == 0:
-            print("checker dl")
             return {"bool": True, "target": LEFT_DOWN}
-        elif gameboard[s_row-1][s_column+1] == self.opponent_number \
+
+        #En haut à droite
+        elif (gameboard[s_row-1][s_column+1] == self.opponent_number \
+                or gameboard[s_row-1][s_column+1] == self.opponent_number+0.5) \
                 and gameboard[s_row-2][s_column+2] == 0:
-            print("checker ur")
             return {"bool": True, "target": RIGHT_UP}
-        elif gameboard[s_row-1][s_column-1] == self.opponent_number \
+
+        #En haut à gauche
+        elif (gameboard[s_row-1][s_column-1] == self.opponent_number \
+                or gameboard[s_row-1][s_column-1] == self.opponent_number+0.5) \
                 and gameboard[s_row-2][s_column-2] == 0:
-            print("checker ul")
             return {"bool": True, "target": LEFT_UP}
+
+        #Il n'y a aucune cible possible.
         return {"bool": False, "target": None}
 
+
     def can_capture_again_with_king(self, gameboard, s_row, s_column):
+        """
+        Détermine si le joueur peut rejouer.
+
+        Paramètres
+        ----------
+        s_row, s_column: int
+            Coordonnées de la pièce à bouger.
+
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        dict
+            "bool": bool
+                indique si le joueur est dans les conditions pour rejouer.
+            "target": str
+                indique la direction et le sens du pion adverse à prendre.
+                    None: pas de pièce adverse pour un simple déplacement.
+                    RIGHT_DOWN: La pièce adverse ciblée se situe en bas à droite.
+                    LEFT_DOWN: La pièce adverse ciblée se situe en bas à gauche.
+                    RIGHT_UP: La pièce adverse ciblée se situe en haut à droite.
+                    LEFT_UP: La pièce adverse ciblée se situe en haut à gauche.
+
+        Note
+        -------
+        On est dans le cas où le joueur vient de prendre une pièce adverse avec sa dame.
+        Il ne peut rejouer que si il peut reprendre une pièce adverse.
+        """
+
+        # Le joueur rentre des coordonnées de 1 à 10.
+        # gameboard est un tableau 10x10 avec les lignes
+        # et les colonnes commençant à 0 finissant à 9.
+        # On décrémente donc les coordonnées entrées par le joueur.
         s_row -= 1
         s_column -= 1
-        #check en descendant sur le plateau
-        column_right = s_column
-        column_left = s_column
+
+        #Vérification en descendant sur le plateau
+        col_right = s_column
+        col_left = s_column
+        #En bas
         for row in range(s_row, 10):
-            if gameboard[row][column_right] == self.opponent_number \
-                    and gameboard[row+1][column_right+1] == 0:
-                print("king dr")
+            #A droite
+            if (gameboard[row][col_right] == self.opponent_number \
+                    or gameboard[row][col_right] == self.opponent_number+0.5) \
+                    and gameboard[row+1][col_right+1] == 0:
                 return {"bool": True, "target": RIGHT_DOWN}
-            elif gameboard[row][column_left] == self.opponent_number \
-                    and gameboard[row+1][column_left-1] == 0:
-                print("king dl")
+
+            #A gauche
+            elif (gameboard[row][col_left] == self.opponent_number \
+                    or gameboard[row][col_left] == self.opponent_number+0.5) \
+                    and gameboard[row+1][col_left-1] == 0:
                 return {"bool": True, "target": LEFT_DOWN}
-            column_right +=1
-            column_left -= 1
 
-        #check en montant sur le plateau
-        column_right = s_column
-        column_left = s_column
+            col_right +=1
+            col_left -= 1
+
+        #Vérification en montant sur le plateau
+        col_right = s_column
+        col_left = s_column
+        #En haut
         for row in range(s_row-1, -1, -1):
-            if gameboard[row][column_right] == self.opponent_number \
-                    and gameboard[row+1][column_right+1] == 0:
-                print("king ur")
+            #A droite
+            if (gameboard[row][col_right] == self.opponent_number \
+                    or gameboard[row][col_right] == self.opponent_number+0.5) \
+                    and gameboard[row+1][col_right+1] == 0:
                 return {"bool": True, "target": RIGHT_UP}
-            elif gameboard[row][column_left] == self.opponent_number \
-                    and gameboard[row+1][column_left-1] == 0:
-                print("king ul")
-                return {"bool": True, "target": LEFT_UP}
-            column_right +=1
-            column_left -= 1
 
+            #A gauche
+            elif (gameboard[row][col_right] == self.opponent_number \
+                    or gameboard[row][col_right] == self.opponent_number+0.5) \
+                    and gameboard[row+1][col_left-1] == 0:
+                return {"bool": True, "target": LEFT_UP}
+
+            col_right +=1
+            col_left -= 1
+
+        #Il n'y a aucune cible possible.
         return {"bool": False, "target": None}
 
 
@@ -216,9 +459,28 @@ class Human(Player):
     def __init__(self, number, score, opponent_number, factor):
         super().__init__(number, score, opponent_number, factor)
 
-    # Cette fonction a pour but de demander au joueur ce qu'il veut faire pendant son tour.
+
     def choose_s_row(self, gameboard):
-        print("Les lignes et les colonnes commencent à 1 !")
+        """
+        Demande au joueur sur quelle ligne se place sa pièce désirée.
+
+        Paramètres
+        ----------
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        start_row: int
+            Compris dans [1,10]
+            Ligne sur laquelle se situe la pièce qui va faire un mouvement.
+
+        Exception
+        -------
+        Si la coordonnée rentrée n'est pas un nombre.
+        """
+
+        display_message("Les lignes et les colonnes commencent à 1 !")
         while True:
            try:
                start_row = int(
@@ -232,7 +494,27 @@ class Human(Player):
                view(gameboard)
         return start_row
 
+
     def choose_s_column(self, gameboard):
+        """
+        Demande au joueur sur quelle colonne se place sa pièce désirée.
+
+        Paramètres
+        ----------
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        start_column: int
+            Compris dans [1,10]
+            Colonne sur laquelle se situe la pièce qui va faire un mouvement.
+
+        Exception
+        -------
+        Si la coordonnée rentrée n'est pas un nombre.
+        """
+
         while True:
             try:
                 start_column = int(
@@ -246,7 +528,27 @@ class Human(Player):
                 view(gameboard)
         return start_column
 
+
     def choose_t_row(self, gameboard):
+        """
+        Demande au joueur sur quelle ligne il veut faire avancer sa pièce.
+
+        Paramètres
+        ----------
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        target_row: int
+            Compris dans [1,10]
+            Ligne sur laquelle la pièce va avancer.
+
+        Exception
+        -------
+        Si la coordonnée rentrée n'est pas un nombre.
+        """
+
         while True:
             try:
                 target_row = int(
@@ -260,7 +562,27 @@ class Human(Player):
                 view(gameboard)
         return target_row
 
+
     def choose_t_column(self, gameboard):
+        """
+        Demande au joueur sur quelle colonne il veut faire avancer sa pièce.
+
+        Paramètres
+        ----------
+        gameboard: array
+            Définit le plateau de jeu en cours.
+
+        Renvoie
+        -------
+        target_column: int
+            Compris dans [1,10]
+            Colonne sur laquelle la pièce va avancer.
+
+        Exception
+        -------
+        Si la coordonnée rentrée n'est pas un nombre.
+        """
+
         while True:
             try:
                 target_column = int(
@@ -273,6 +595,9 @@ class Human(Player):
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
         return target_column
+
+
+
 
 
 # class IA():

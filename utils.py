@@ -1,4 +1,23 @@
+# -*- coding: utf-8 -*-
+"""
+Project : Jeu de Dames
+
+@authors: Ambre Fischer & Charles Fortier (groupe TD 2)
+"""
+
 def display_message(message, color="black"):
+    """
+    Affiche le message via la fonction print.
+
+    Paramètres
+    ----------
+    message: str
+        Définit le message que l'on veut afficher.
+
+    color: str
+        Définit la couleur du message à afficher
+    """
+
     print(" ")
     print(" ")
     print("\033[1;" + select_color(color) + ";48m " + message + "  \n")
@@ -6,6 +25,15 @@ def display_message(message, color="black"):
 
 
 def select_color(color):
+    """
+    Détermine la couleur voulue
+
+    Paramètres
+    ----------
+    color: str
+        Définit la couleur du message que l'on veut afficher.
+    """
+
     colors = {
         "grey": "30",
         "red": "31",
@@ -21,6 +49,14 @@ def select_color(color):
 
 
 def display_beginning():
+    """
+    Affiche le message du début.
+
+    Paramètres
+    ----------
+    Aucun
+    """
+
     print(''' 
                      _                          _____ _                _               
      /\             | |                ___     / ____| |              | |            _ 
