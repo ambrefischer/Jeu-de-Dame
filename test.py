@@ -25,26 +25,38 @@ class TestPiece (unittest.TestCase):
         '''
 
         pion = Piece(1,2,3,4,5)
-        self.assertEqual(pion.s_row, 0)
-        self.assertEqual(pion.s_column, 1)
-        self.assertEqual(pion.t_row, 2)
-        self.assertEqual(pion.t_column, 3)
+        self.assertEqual(pion.s_row, 1)
+        self.assertEqual(pion.s_column, 2)
+        self.assertEqual(pion.t_row, 3)
+        self.assertEqual(pion.t_column, 4)
         self.assertEqual(pion.player_number, 5)
 
 
-    def testKing(self):
+    def testcheck_king(self):
         '''
-        Création d'une dame.
-        Teste si la dame reste une dame après mouvement.
+        Teste si les conditions sont réunies pour qu'un pion devienne une dame.
         '''
 
         joueur = Player(1,0,2,1)
         board = np.zeros((10,10))
-        board[0][0] = 1.5
-        dame = King(1,1,5,5,1)
-        dame.move(board)
-        self.assertEqual(board[4][4],1.5)
-        self.assertEqual(board[0][0], 0)
+        board[8][8] = 1
+        board[7][7] = 1
+        pion1 = Checker(8,8,9,9,1)
+        pion2 = Checker(7,7,8,8,1)
+        self.assertEqual(pion1.check_king(),True)
+        self.assertEqual(pion2.check_king(),False)
+
+    def testbecome_king(self):
+        '''
+        Teste si le pion devient correctement une dame.
+        '''
+        joueur = Player(1,0,2,1)
+        board = np.zeros((10,10))
+        board[0][0] = 1
+        pion1 = Checker(8,8,9,9,1)
+        pion1.move(board)
+        pion1.become_king(board)
+        self.assertEqual(board[9][9],1.5)
 
 
     def testmove(self):
@@ -55,14 +67,14 @@ class TestPiece (unittest.TestCase):
 
         tab = np.zeros((2,2))
         tab[0][0] = 1
-        tab[1][1] = 2
-        pion1 = Piece(1,1,1,2,1)
-        pion2 = Piece(2,2,2,1,2)
+        tab[0][1] = 2
+        pion1 = Piece(0,0,1,1,1)
+        pion2 = Piece(0,1,1,0,2)
         pion1.move(tab)
         pion2.move(tab)
         self.assertEqual(tab[0][0], 0)
-        self.assertEqual(tab[0][1], 1)
-        self.assertEqual(tab[1][1], 0)
+        self.assertEqual(tab[0][1], 0)
+        self.assertEqual(tab[1][1], 1)
         self.assertEqual(tab[1][0], 2)
 
 
@@ -86,14 +98,14 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(joueur.factor, -1)
 
 
-    def testone_turn(self):
+    def testcheck_coords(self):
         '''
         Crétion d'un joueur.
         Test l'entrée de mauvaises coordonnées.
         '''
 
         joueur = Player(1,0,2,-1)
-        self.assertEqual(joueur.one_turn(0,1,1,1,[]),{"message": PB})
+        self.assertEqual(joueur.check_coords(0,100,1,1,[]),{"message": PB})
 
 
     def testtake_checker(self):
@@ -106,7 +118,7 @@ class TestPlayer(unittest.TestCase):
         board = np.zeros((10,10))
         board[0][0] = 1
         #test du déplacement vers une case vide
-        self.assertEqual(joueur.take_checker(0,0,1,1,board),{"message": I_M_ON_MY_WAY, "type": CHECKER})
+        self.assertEqual(joueur.take_checker(0,0,1,1,board),{"message": I_M_ON_MY_WAY, "target": None, "type": CHECKER})
 
         #test de la prise de pion en bas à droite
         board[1][1] = 2
@@ -131,6 +143,61 @@ class TestPlayer(unittest.TestCase):
         joueur = Player(1,3,2,1)
         joueur.win_one_point()
         self.assertEqual(joueur.score, 4)
+
+
+    def testtake_king(self):
+        '''
+        Création d'un joueur et d'une dame pour tester les différents déplacements.
+        '''
+
+        #Teste le simple déplacement.
+        joueur = Player(1,0,2,1)
+        board = np.zeros((10,10))
+        board[0][0] = 1.5
+        # on souhaite effectuer un déplacement avec une dame depuis la case [0,0] vers la case [7,7]
+        dame = King(0,0,7,7,1)
+        where_king = joueur.where_king(0,0,7,7)
+        self.assertEqual(joueur.take_king(0,0,7,7,board,where_king),{"message": I_M_ON_MY_WAY, "target": None, "type": KING})
+
+        #Teste les mauvaises coordonnées
+        joueur = Player(1,0,2,1)
+        board = np.zeros((10,10))
+        board[0][0] = 1.5
+        # on souhaite effectuer un déplacement avec une dame depuis la case [0,0] vers la case [3,7]
+        dame = King(0,0,3,7,1)
+        where_king = joueur.where_king(0,0,3,7)
+        self.assertEqual(joueur.take_king(0,0,3,7,board,where_king),{"message": PB})
+
+        #Teste la prise d'une seule pièce (située aux coordonnées [1,1] en un seul déplacement
+        joueur = Player(1,0,2,1)
+        board = np.zeros((10,10))
+        board[0][0] = 1.5
+        board[1][1] = 2
+        # on souhaite effectuer un déplacement avec une dame depuis la case [0,0] vers la case [7,7]
+        dame = King(0,0,7,7,1)
+        where_king = joueur.where_king(0,0,7,7)
+        self.assertEqual(joueur.take_king(0,0,7,7,board,where_king),{"message": I_CAPTURE, "target": where_king, "opponent_row": 1,
+                        "opponent_col": 1, "type": KING})
+
+        #Teste la prise de plusieurs pièces en un seul déplacement
+        joueur = Player(1,0,2,1)
+        board = np.zeros((10,10))
+        board[0][0] = 1.5
+        board[1][1] = 2
+        board[2][2] = 2
+        # on souhaite effectuer un déplacement avec une dame depuis la case [0,0] vers la case [7,7]
+        dame = King(0,0,7,7,1)
+        where_king = joueur.where_king(0,0,7,7)
+        self.assertEqual(joueur.take_king(0,0,7,7,board,where_king),{"message": PB})
+        
+
+
+        
+        
+
+        
+        
+    
          
     
         

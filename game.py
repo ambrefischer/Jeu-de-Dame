@@ -3,21 +3,7 @@
 Project : Jeu de Dames
 
 @authors: Ambre Fischer & Charles Fortier (groupe TD 2)
-
-suggestion d'idées :
-    on peut suggérer au joueur quels mouvement il peut faire
-    musique
-    feu d'artifice de fin
-    demander d'obtenir les règles du jeu
-    si le joueur ne peut plus bouger mais il lui reste des pions, il perd la partie.
-    créer une fonction récursive
-    
-ne pas oublier :
-    faire les figures demandés
-    obliger à manger si possible
 """
-
-
 
 from piece import Checker, King
 from player import Human  # , IA
