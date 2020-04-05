@@ -81,12 +81,12 @@ class Player():
             return {"message": PB}
 
         # Le joueur prend bien un pion et le sien.
-        if float(gameboard[s_row][s_column]) == self.number:
+        if gameboard[s_row][s_column] == self.number:
             return self.take_checker(s_row, s_column, t_row,
                                      t_column, gameboard)
 
         # Le joueur prend une dame et la sienne.
-        elif float(gameboard[s_row][s_column]) == self.number+0.5:
+        elif gameboard[s_row][s_column] == self.number+0.5:
             where_king = self.where_king(s_row, s_column, t_row, t_column)
             return self.take_king(s_row, s_column, t_row,
                                      t_column, gameboard, where_king)
@@ -134,36 +134,36 @@ class Player():
 
         # Le joueur le met dans une case acceptée pour bouger (en bas pour j1, en haut pour j2).
         if t_row == s_row+self.factor and (t_column == s_column+1 or t_column == s_column-1) \
-                and int(gameboard[t_row][t_column]) == 0:
+                and gameboard[t_row][t_column] == 0:
             return {"message": I_M_ON_MY_WAY, "target": None, "type": CHECKER}
 
         # Le joueur le met sur une case acceptée pour manger: 4 cas différents.
         #En bas à droite
         elif (t_row == s_row+2 and t_column == s_column+2) \
-                and int(gameboard[t_row][t_column]) == 0 \
-                and (int(gameboard[s_row+1][s_column+1]) == self.opponent_number \
-                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
+                and gameboard[t_row][t_column] == 0 \
+                and (gameboard[s_row+1][s_column+1] == self.opponent_number \
+                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": RIGHT_DOWN, "type": CHECKER}
 
         #En bas à gauche
         elif (t_row == s_row+2 and t_column == s_column-2) \
-                and int(gameboard[t_row][t_column]) == 0 \
-                and (int(gameboard[s_row+1][s_column-1]) == self.opponent_number \
-                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
+                and gameboard[t_row][t_column] == 0 \
+                and (gameboard[s_row+1][s_column-1] == self.opponent_number \
+                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": LEFT_DOWN, "type": CHECKER}
 
         #En haut à droite
         elif (t_row == s_row-2 and t_column == s_column+2) \
-                and int(gameboard[t_row][t_column]) == 0 \
-                and (int(gameboard[s_row-1][s_column+1]) == self.opponent_number\
-                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
+                and gameboard[t_row][t_column] == 0 \
+                and (gameboard[s_row-1][s_column+1] == self.opponent_number\
+                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": RIGHT_UP, "type": CHECKER}
 
         #En haut à gauche
         elif (t_row == s_row-2 and t_column == s_column-2) \
-                and int(gameboard[t_row][t_column]) == 0 \
-                and (int(gameboard[s_row-1][s_column-1]) == self.opponent_number\
-                or int(gameboard[s_row+1][s_column+1]) == self.opponent_number+0.5):
+                and gameboard[t_row][t_column] == 0 \
+                and (gameboard[s_row-1][s_column-1] == self.opponent_number\
+                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
             return {"message": I_CAPTURE, "target": LEFT_UP, "type": CHECKER}
 
         # Le joueur ne met pas de bonnes coordonnées.
@@ -253,7 +253,7 @@ class Player():
                 row_up = s_row - distance
                 col_right = s_column + distance
                 col_left = s_column - distance
-                if where_king == RIGHT_UP and ([row_up][col_right] == self.opponent_number\
+                if where_king == RIGHT_UP and (gameboard[row_up][col_right] == self.opponent_number\
                         or gameboard[row_up][col_right] == self.opponent_number+0.5):
                     count_capture.append([row_up, col_right])
                 elif where_king == LEFT_UP and (gameboard[row_up][col_left] == self.opponent_number\
@@ -411,8 +411,9 @@ class Player():
         #Vérification en descendant sur le plateau
         col_right = s_column
         col_left = s_column
+        row = s_row
         #En bas
-        for row in range(s_row, 10):
+        while row <= 9 and col_right <= 9 and col_left >= 0:
             #A droite
             if (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
@@ -427,26 +428,29 @@ class Player():
 
             col_right +=1
             col_left -= 1
+            row += 1
 
         #Vérification en montant sur le plateau
         col_right = s_column
         col_left = s_column
+        row = s_row
         #En haut
-        for row in range(s_row-1, -1, -1):
+        while row <= 9 and col_right <= 9 and col_left >= 0:
             #A droite
             if (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
-                    and gameboard[row+1][col_right+1] == 0:
+                    and gameboard[row-1][col_right+1] == 0:
                 return {"bool": True, "target": RIGHT_UP}
 
             #A gauche
-            elif (gameboard[row][col_right] == self.opponent_number \
-                    or gameboard[row][col_right] == self.opponent_number+0.5) \
-                    and gameboard[row+1][col_left-1] == 0:
+            elif (gameboard[row][col_left] == self.opponent_number \
+                    or gameboard[row][col_left] == self.opponent_number+0.5) \
+                    and gameboard[row-1][col_left-1] == 0:
                 return {"bool": True, "target": LEFT_UP}
 
             col_right +=1
             col_left -= 1
+            row -= 1
 
         #Il n'y a aucune cible possible.
         return {"bool": False, "target": None}
@@ -526,6 +530,7 @@ class Human(Player):
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
                 view(gameboard)
+
         return start_column
 
 

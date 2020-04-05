@@ -217,10 +217,11 @@ def play_turn(player_turn, j1, j2, gameboard):
                 player_turn["status"] = STILL_PLAYING
                 display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
         #avec sa dame.
-        play_again = player.can_capture_again_with_king(gameboard, coords["t_row"], coords["t_column"])
-        if play_again["bool"] == True:
-            player_turn["status"] = STILL_PLAYING
-            display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
+        else:
+            play_again = player.can_capture_again_with_king(gameboard, coords["t_row"], coords["t_column"])
+            if play_again["bool"] == True:
+                player_turn["status"] = STILL_PLAYING
+                display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
 
 
     # Vérification si le pion ne devient pas une dame
@@ -290,11 +291,12 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
             display_message("Vous avez fini votre tour.")
             display_message("Joueur %d, votre score est de %d." % (player.number, player.score))
     #la piece à rejouer est une dame
-    play_again = player.can_capture_again_with_king(gameboard, coords_again["t_row"], coords_again["t_column"])
-    if not play_again["bool"] == True:
-        player_turn["status"] = END_OF_TURN
-        display_message("Vous avez fini votre tour.")
-        display_message("Joueur %d, votre score est de %d." % (player.number, player.score))
+    else:
+        play_again = player.can_capture_again_with_king(gameboard, coords_again["t_row"], coords_again["t_column"])
+        if not play_again["bool"] == True:
+            player_turn["status"] = END_OF_TURN
+            display_message("Vous avez fini votre tour.")
+            display_message("Joueur %d, votre score est de %d." % (player.number, player.score))
 
 
     # Vérification si le pion ne devient pas une dame
