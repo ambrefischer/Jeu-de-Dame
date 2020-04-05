@@ -310,11 +310,11 @@ class Player():
 
         Renvoie
         -------
-        dict
+        play_again: dict
             "bool": bool
                 indique si le joueur est dans les conditions pour rejouer.
-            "target": str
-                indique la direction et le sens du pion adverse à prendre.
+            "target_rd", "target_ld", "target_ru", "target_lu" : str
+                indiquent la direction et le sens du pion adverse à prendre.
                     None: pas de pièce adverse pour un simple déplacement.
                     RIGHT_DOWN: La pièce adverse ciblée se situe en bas à droite.
                     LEFT_DOWN: La pièce adverse ciblée se situe en bas à gauche.
@@ -323,34 +323,40 @@ class Player():
 
         """
 
+        #On considère au début qu'il n'y a pas de possibilité de rejouer.
+        play_again = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
+
         #On vérifie les cases en diagonales voisines si elles sont occupées par une pièce adverse
         # et que la case encore après est vide.
         #En bas à droite
         if (gameboard[s_row+1][s_column+1] == self.opponent_number \
                 or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5)\
                 and gameboard[s_row+2][s_column+2] == 0:
-            return {"bool": True, "target": RIGHT_DOWN}
+            play_again["bool"] = True
+            play_again["target_rd"] = RIGHT_DOWN
 
         #En bas à gauche
-        elif (gameboard[s_row+1][s_column-1] == self.opponent_number \
+        if (gameboard[s_row+1][s_column-1] == self.opponent_number \
                 or gameboard[s_row+1][s_column-1] == self.opponent_number+0.5) \
                 and gameboard[s_row+2][s_column-2] == 0:
-            return {"bool": True, "target": LEFT_DOWN}
+            play_again["bool"] = True
+            play_again["target_ld"] = LEFT_DOWN
 
         #En haut à droite
-        elif (gameboard[s_row-1][s_column+1] == self.opponent_number \
+        if (gameboard[s_row-1][s_column+1] == self.opponent_number \
                 or gameboard[s_row-1][s_column+1] == self.opponent_number+0.5) \
                 and gameboard[s_row-2][s_column+2] == 0:
-            return {"bool": True, "target": RIGHT_UP}
+            play_again["bool"] = True
+            play_again["target_ru"] = RIGHT_UP
 
         #En haut à gauche
-        elif (gameboard[s_row-1][s_column-1] == self.opponent_number \
+        if (gameboard[s_row-1][s_column-1] == self.opponent_number \
                 or gameboard[s_row-1][s_column-1] == self.opponent_number+0.5) \
                 and gameboard[s_row-2][s_column-2] == 0:
-            return {"bool": True, "target": LEFT_UP}
+            play_again["bool"] = True
+            play_again["target_lu"] = LEFT_UP
 
-        #Il n'y a aucune cible possible.
-        return {"bool": False, "target": None}
+        return play_again
 
 
     def can_capture_again_with_king(self, gameboard, s_row, s_column):
@@ -389,7 +395,7 @@ class Player():
         col_left = s_column
         row = s_row
         #En bas
-        while row <= 9 and col_right <= 9 and col_left >= 0:
+        while row < 9 and col_right < 9 and col_left > 0:
             #A droite
             if (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
@@ -411,7 +417,7 @@ class Player():
         col_left = s_column
         row = s_row
         #En haut
-        while row <= 9 and col_right <= 9 and col_left >= 0:
+        while row < 9 and col_right < 9 and col_left > 0:
             #A droite
             if (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \

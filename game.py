@@ -265,9 +265,13 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
     coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
     make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"], gameboard)
 
-    #Si les coordonnées ne remplissent pas les conditions du jeu ou bien que le joueur ne décide pas de jouer le coup obligatoire
-    #alors il doit redonner des coordonnées.
-    while make_another_move["message"] == PB or make_another_move["target"] != play_again["target"]:
+    #Si les coordonnées ne remplissent pas les conditions du jeu ou bien que le joueur décide de ne pas jouer
+    # le coup obligatoire alors il doit redonner des coordonnées.
+    while make_another_move["message"] == PB or (\
+            make_another_move["target"] != play_again["target_rd"] \
+            and make_another_move["target"] != play_again["target_ld"] \
+            and make_another_move["target"] != play_again["target_ru"] \
+            and make_another_move["target"] != play_again["target_lu"]):
         display_message("Vous êtes obligé de manger une pièce adverse.")
         view(gameboard)
         coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
