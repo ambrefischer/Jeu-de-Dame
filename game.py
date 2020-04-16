@@ -7,8 +7,8 @@ Project : Jeu de Dames
 
 from piece import Checker, King
 from player import Human  # , IA
+from gameboard import Gameboard
 from utils import *
-from gameboard import *
 from constants import *
 from highscore import *
 
@@ -24,7 +24,7 @@ def play_with():
 
     Renvoie
     -------
-    j2: player.Human
+    J2: player.Human
         Le joueur adverse est créé sous la forme d'un Objet. L'Objet IA n'est pas encore implémenté.
     """
 
@@ -38,16 +38,16 @@ def play_with():
     return Human(1, 0, 2, 1)
 
 
-def initialisation(j1, j2):
+def initialisation(J1, J2):
     """
     Initialise le jeu.
 
     Paramètres
     ----------
-    j1: player.Human
+    J1: player.Human
         Caractérise le joueur 1.
 
-    j2: player.Human
+    J2: player.Human
         Caractérise le joueur 2.
 
     Renvoie
@@ -75,8 +75,9 @@ def initialisation(j1, j2):
     display_message("Let's the game begin !")
 
     # Création du plateau
-    gameboard = create_gameboard(j1, j2)
-    view(gameboard)
+    Checkerboard = Gameboard(J1, J2)
+    gameboard = Checkerboard.gameboard
+    Checkerboard.view()
 
     # Définition du tour du premier joueur
     first_turn = {"player_number": 1.0, "status": None}
@@ -84,7 +85,7 @@ def initialisation(j1, j2):
     return {"player_turn": first_turn, "gameboard": gameboard}
 
 
-def who_plays(player_turn, j1, j2):
+def who_plays(player_turn, J1, J2):
     """
     Définit le joueur qui doit jouer.
 
@@ -93,7 +94,7 @@ def who_plays(player_turn, j1, j2):
     player_turn: dict
         Contient le numéro du joueur qui doit jouer.
 
-    j1, j2: player.Human
+    J1, J2: player.Human
         Caractérisent les joueurs.
 
     Renvoie
@@ -110,9 +111,9 @@ def who_plays(player_turn, j1, j2):
 
     # Tour du joueur 1
     if player_turn["player_number"] % 2 == 1.0:
-        return j1
+        return J1
     # Tour du joueur 2
-    return j2
+    return J2
 
 
 def choice_piece(coords, make_a_move, player):
@@ -132,20 +133,20 @@ def choice_piece(coords, make_a_move, player):
 
     Renvoie
     -------
-    piece: piece.Piece
-        L'Objet piece peut être soit un Checker (pion) soit un King (dame).
+    Piece: piece.Piece
+        L'Objet Piece peut être soit un Checker (pion) soit un King (dame).
     """
 
     if make_a_move["type"] == CHECKER:
-        piece = Checker(coords["s_row"], coords["s_column"],
+        Piece = Checker(coords["s_row"], coords["s_column"],
                         coords["t_row"], coords["t_column"], player.number)
     else:
-        piece = King(coords["s_row"], coords["s_column"],
+        Piece = King(coords["s_row"], coords["s_column"],
                      coords["t_row"], coords["t_column"], player.number)
-    return piece
+    return Piece
 
 
-def play_turn(player_turn, j1, j2, gameboard):
+def play_turn(player_turn, J1, J2, gameboard):
     """
     Simule le tour entier d'un joueur.
 
@@ -154,7 +155,7 @@ def play_turn(player_turn, j1, j2, gameboard):
     player_turn: dict
         Contient le numéro du joueur qui doit jouer.
 
-    j1, j2: player.Human
+    J1, J2: player.Human
         Caractérisent les joueurs.
 
     gameboard: array
@@ -162,7 +163,7 @@ def play_turn(player_turn, j1, j2, gameboard):
     """
 
     # Détermination du joueur qui doit jouer le tour
-    player = who_plays(player_turn, j1, j2)
+    player = who_plays(player_turn, J1, J2)
 
     display_message(
         "Joueur %d, à vous de jouer. Votre score est de %d."
@@ -177,23 +178,23 @@ def play_turn(player_turn, j1, j2, gameboard):
 
     # Problème dans les coordonnées
     while make_a_move["message"] == PB:
-        view(gameboard)
+        Checkerboard.view()
         coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
                   "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
         make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
                                       coords["t_row"], coords["t_column"], gameboard)
 
     # Acceptation des coordonnées : la pièce est un pion ou une dame
-    piece = choice_piece(coords, make_a_move, player)
+    Piece = choice_piece(coords, make_a_move, player)
 
     # Si le joueur désire se déplacer.
     if make_a_move["message"] == I_M_ON_MY_WAY:
-        gameboard = piece.move(gameboard)
+        gameboard = Piece.move(gameboard)
 
     # Ou le joueur désire manger un pion adverse.
     elif make_a_move["message"] == I_CAPTURE:
-        gameboard = piece.move(gameboard)
-        gameboard = piece.capture(gameboard, make_a_move)
+        gameboard = Piece.move(gameboard)
+        gameboard = Piece.capture(gameboard, make_a_move)
         player.win_one_point()
         #Vérification si le joueur peut rejouer, dans ce cas : "status" = STILL_PLAYING
         #avec son pion.
@@ -211,12 +212,12 @@ def play_turn(player_turn, j1, j2, gameboard):
 
 
     # Vérification si le pion ne devient pas une dame
-    if make_a_move["type"] == CHECKER and piece.check_king():
-        gameboard = piece.become_king(gameboard)
+    if make_a_move["type"] == CHECKER and Piece.check_king():
+        gameboard = Piece.become_king(gameboard)
 
     #Le joueur est dans le cas où il peut rejouer.
     if player_turn["status"] == STILL_PLAYING:
-        view(gameboard)
+        Checkerboard.view()
         play_turn_again(play_again, player_turn, player, coords["t_row"], coords["t_column"], gameboard)
 
     #Le joueur a fini de jouer.
@@ -260,17 +261,17 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
             and make_another_move["target"] != play_again["target_ru"] \
             and make_another_move["target"] != play_again["target_lu"]):
         display_message("Vous êtes obligé de manger une pièce adverse.")
-        view(gameboard)
+        Checkerboard.view()
         coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
         make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"], gameboard)
 
     # Acceptation des coordonnées : la pièce est un pion ou une dame
     coords_again_all = {"s_row": s_row, "s_column": s_column, "t_row": coords_again["t_row"], "t_column": coords_again["t_column"]}
-    piece = choice_piece(coords_again_all, make_another_move, player)
+    Piece = choice_piece(coords_again_all, make_another_move, player)
 
     #Le joueur mange forcément l'adversaire.
-    gameboard = piece.move(gameboard)
-    gameboard = piece.capture(gameboard, make_another_move)
+    gameboard = Piece.move(gameboard)
+    gameboard = Piece.capture(gameboard, make_another_move)
     player.win_one_point()
 
     #Le tour s'arrête si le joueur ne peut plus rejouer.
@@ -291,12 +292,12 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
 
 
     # Vérification si le pion ne devient pas une dame
-    if make_another_move["type"] == CHECKER and piece.check_king():
-        gameboard = piece.become_king(gameboard)
+    if make_another_move["type"] == CHECKER and Piece.check_king():
+        gameboard = Piece.become_king(gameboard)
 
     #rejouer si l'on peut
     while player_turn["status"] == STILL_PLAYING:
         display_message("Vous pouvez rejouer avec le même pion uniquement pour manger.")
-        view(gameboard)
+        Checkerboard.view()
         play_turn_again(play_again, player_turn, player, coords_again["t_row"], coords_again["t_column"], gameboard)
 

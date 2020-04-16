@@ -122,7 +122,7 @@ class Player():
                 indique que la pièce est un Checker.
         """
 
-        # Le joueur le met dans une case acceptée pour bouger (en bas pour j1, en haut pour j2).
+        # Le joueur le met dans une case acceptée pour bouger (en bas pour J1, en haut pour J2).
         if t_row == s_row+self.factor and (t_column == s_column+1 or t_column == s_column-1) \
                 and gameboard[t_row][t_column] == 0:
             return {"message": I_M_ON_MY_WAY, "target": None, "type": CHECKER}
@@ -470,6 +470,17 @@ class Human(Player):
         super().__init__(number, score, opponent_number, factor)
 
 
+    def define_possible(self, gameboard):
+        possible_choice = {}
+        index = 1
+        for i in range(10):
+            for j in range(10):
+                if gameboard[i][j] == self.number:
+                    possible_choice[str(index)] = [i,j]
+                    index += 1
+        return possible_choice
+
+
     def choose_s_row(self, gameboard):
         """
         Demande au joueur sur quelle ligne se place sa pièce désirée.
@@ -501,7 +512,7 @@ class Human(Player):
                    "Veuillez rentrer des coordonnées de cases.", "red")
                display_message(
                    "Les lignes et les colonnes commencent à 1 !", "black")
-               view(gameboard)
+               Checkerboard.view()
         return start_row - 1
 
 
@@ -535,7 +546,7 @@ class Human(Player):
                     "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
+                Checkerboard.view()
 
         return start_column - 1
 
@@ -570,7 +581,7 @@ class Human(Player):
                     "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
+                Checkerboard.view()
 
         return target_row - 1
 
@@ -605,7 +616,7 @@ class Human(Player):
                     "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
+                Checkerboard.view()
 
         return target_column - 1
 
