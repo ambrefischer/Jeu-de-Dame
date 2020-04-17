@@ -23,10 +23,11 @@ if __name__ == "__main__":
     player_turn = initialisation["player_turn"]
     gameboard = initialisation["gameboard"]
 
+
     # Jeu
     while J1.score < 20 or J2.score < 20:
         play_turn(player_turn, J1, J2, gameboard)
-        Checkerboard.view()
+        view(gameboard)
         player_turn["player_number"] += 1
 
     # Comdition de gagne

@@ -7,7 +7,7 @@ Project : Jeu de Dames
 
 from piece import Checker, King
 from player import Human  # , IA
-from gameboard import Gameboard
+from gameboard import *
 from utils import *
 from constants import *
 from highscore import *
@@ -75,9 +75,8 @@ def initialisation(J1, J2):
     display_message("Let's the game begin !")
 
     # Création du plateau
-    Checkerboard = Gameboard(J1, J2)
-    gameboard = Checkerboard.gameboard
-    Checkerboard.view()
+    gameboard = create_gameboard(J1, J2)
+    view(gameboard)
 
     # Définition du tour du premier joueur
     first_turn = {"player_number": 1.0, "status": None}
@@ -164,6 +163,8 @@ def play_turn(player_turn, J1, J2, gameboard):
 
     # Détermination du joueur qui doit jouer le tour
     player = who_plays(player_turn, J1, J2)
+    coords_pieces = player.where_piece(gameboard)[0]
+    must_capture = player.must_capture(gameboard)
 
     display_message(
         "Joueur %d, à vous de jouer. Votre score est de %d."
@@ -174,15 +175,15 @@ def play_turn(player_turn, J1, J2, gameboard):
     coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
               "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
     make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
-                                  coords["t_row"], coords["t_column"], gameboard)
+                                  coords["t_row"], coords["t_column"], gameboard, coords_pieces, must_capture)
 
     # Problème dans les coordonnées
     while make_a_move["message"] == PB:
-        Checkerboard.view()
+        view(gameboard)
         coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
                   "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
         make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
-                                      coords["t_row"], coords["t_column"], gameboard)
+                                      coords["t_row"], coords["t_column"], gameboard, coords_pieces, must_capture)
 
     # Acceptation des coordonnées : la pièce est un pion ou une dame
     Piece = choice_piece(coords, make_a_move, player)
@@ -199,13 +200,13 @@ def play_turn(player_turn, J1, J2, gameboard):
         #Vérification si le joueur peut rejouer, dans ce cas : "status" = STILL_PLAYING
         #avec son pion.
         if make_a_move["type"] == CHECKER:
-            play_again = player.can_capture_again_with_checker(gameboard, coords["t_row"], coords["t_column"])
+            play_again = player.can_capture_with_checker(gameboard, coords["t_row"], coords["t_column"])
             if play_again["bool"] == True:
                 player_turn["status"] = STILL_PLAYING
                 display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
         #avec sa dame.
         else:
-            play_again = player.can_capture_again_with_king(gameboard, coords["t_row"], coords["t_column"])
+            play_again = player.can_capture_with_king(gameboard, coords["t_row"], coords["t_column"])
             if play_again["bool"] == True:
                 player_turn["status"] = STILL_PLAYING
                 display_message("Vous pouvez rejouer avec le même pion uniquement pour manger un pion adverse.")
@@ -217,7 +218,7 @@ def play_turn(player_turn, J1, J2, gameboard):
 
     #Le joueur est dans le cas où il peut rejouer.
     if player_turn["status"] == STILL_PLAYING:
-        Checkerboard.view()
+        view(gameboard)
         play_turn_again(play_again, player_turn, player, coords["t_row"], coords["t_column"], gameboard)
 
     #Le joueur a fini de jouer.
@@ -231,8 +232,8 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
     Paramètres
     ----------
     play_again: dict
-        Est déterminé par la méthode player.can_capture_again_with_checker
-            ou player.can_capture_again_with_king.
+        Est déterminé par la méthode player.can_capture_with_checker
+            ou player.can_capture_with_king.
         Contient l'emplacement de la pièce adverse à prendre.
 
     player_turn: dict
@@ -249,21 +250,24 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
     """
 
     #Demande de rentrer des coordonnées pour la case ciblée.
+    coords_pieces = player.where_piece(gameboard)[0]
+    must_capture = player.must_capture(gameboard)
     coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
-    make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"], gameboard)
+    make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"],
+                                            gameboard, coords_pieces, must_capture)
 
     #Si les coordonnées ne remplissent pas les conditions du jeu ou bien que le joueur décide de ne pas jouer
     # le coup obligatoire alors il doit redonner des coordonnées.
-    print(play_again)
     while make_another_move["message"] == PB or (\
             make_another_move["target"] != play_again["target_rd"] \
             and make_another_move["target"] != play_again["target_ld"] \
             and make_another_move["target"] != play_again["target_ru"] \
             and make_another_move["target"] != play_again["target_lu"]):
         display_message("Vous êtes obligé de manger une pièce adverse.")
-        Checkerboard.view()
+        view(gameboard)
         coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
-        make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"], gameboard)
+        make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"],
+                                                gameboard, coords_pieces, must_capture)
 
     # Acceptation des coordonnées : la pièce est un pion ou une dame
     coords_again_all = {"s_row": s_row, "s_column": s_column, "t_row": coords_again["t_row"], "t_column": coords_again["t_column"]}
@@ -277,14 +281,14 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
     #Le tour s'arrête si le joueur ne peut plus rejouer.
     #la pièce a rejouer est un pion
     if make_another_move["type"] == CHECKER:
-        play_again = player.can_capture_again_with_checker(gameboard, coords_again["t_row"], coords_again["t_column"])
+        play_again = player.can_capture_with_checker(gameboard, coords_again["t_row"], coords_again["t_column"])
         if not play_again["bool"] == True:
             player_turn["status"] = END_OF_TURN
             display_message("Vous avez fini votre tour.")
             display_message("Joueur %d, votre score est de %d." % (player.number, player.score))
     #la piece à rejouer est une dame
     else:
-        play_again = player.can_capture_again_with_king(gameboard, coords_again["t_row"], coords_again["t_column"])
+        play_again = player.can_capture_with_king(gameboard, coords_again["t_row"], coords_again["t_column"])
         if not play_again["bool"] == True:
             player_turn["status"] = END_OF_TURN
             display_message("Vous avez fini votre tour.")
@@ -298,6 +302,6 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
     #rejouer si l'on peut
     while player_turn["status"] == STILL_PLAYING:
         display_message("Vous pouvez rejouer avec le même pion uniquement pour manger.")
-        Checkerboard.view()
+        view(gameboard)
         play_turn_again(play_again, player_turn, player, coords_again["t_row"], coords_again["t_column"], gameboard)
 

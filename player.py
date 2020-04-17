@@ -43,7 +43,39 @@ class Player():
         self.factor = factor
 
 
-    def check_coords(self, s_row, s_column, t_row, t_column, gameboard):
+    def checker_capture_RIGHT_DOWN(self, gameboard, s_row, s_column):
+        if (gameboard[s_row + 1][s_column + 1] == self.opponent_number \
+                or gameboard[s_row + 1][s_column + 1] == self.opponent_number + 0.5) \
+                and gameboard[s_row + 2][s_column + 2] == 0:
+            return True
+        return False
+
+
+    def checker_capture_RIGHT_UP(self, gameboard, s_row, s_column):
+        if (gameboard[s_row-1][s_column+1] == self.opponent_number \
+                or gameboard[s_row-1][s_column+1] == self.opponent_number+0.5) \
+                and gameboard[s_row-2][s_column+2] == 0:
+            return True
+        return False
+
+
+    def checker_capture_LEFT_DOWN(self, gameboard, s_row, s_column):
+        if (gameboard[s_row + 1][s_column - 1] == self.opponent_number \
+                or gameboard[s_row + 1][s_column - 1] == self.opponent_number + 0.5) \
+                and gameboard[s_row + 2][s_column - 2] == 0:
+            return True
+        return False
+
+
+    def checker_capture_LEFT_UP(self, gameboard, s_row, s_column):
+        if (gameboard[s_row-1][s_column-1] == self.opponent_number \
+                or gameboard[s_row-1][s_column-1] == self.opponent_number+0.5) \
+                and gameboard[s_row-2][s_column-2] == 0:
+            return True
+        return False
+
+
+    def check_coords(self, s_row, s_column, t_row, t_column, gameboard, coords_pieces, must_capture):
         """
         Cette fonction verifie que c'est le bon joueur et que la case est bonne.
 
@@ -70,16 +102,35 @@ class Player():
         if out_of_bounds(s_row, s_column, t_row, t_column):
             return {"message": PB}
 
+        # Vérification que le joueur prenne une pièce qui peut manger si elle existe.
+        compt_wrong_move = 0
+        compt_correct_move = 0
+        for key in coords_pieces:
+            rule_row = coords_pieces[key][1]
+            rule_col = coords_pieces[key][2]
+            info_piece = must_capture[key]
+            # Il existe une pièce qui peut manger une pièce adverse et le joueur doit la prendre.
+            if info_piece["bool"] == True:
+                if rule_row != s_row or s_column != rule_col:
+                    compt_wrong_move += 1
+                else:
+                    compt_correct_move += 1
+
+        # Le joueur n'a pas pris la bonne pièce selon les règles du jeu.
+        if compt_wrong_move != 0 and compt_correct_move == 0:
+            display_message("Vous devez prendre la pièce qui peut prendre un point.")
+            return {"message": PB}
+
         # Le joueur prend bien un pion et le sien.
         if gameboard[s_row][s_column] == self.number:
-            return self.take_checker(s_row, s_column, t_row,
-                                     t_column, gameboard)
+            return self.take_checker(s_row, s_column, t_row, t_column,
+                                     gameboard, info_piece)
 
         # Le joueur prend une dame et la sienne.
         elif gameboard[s_row][s_column] == self.number+0.5:
             where_king = self.where_king(s_row, s_column, t_row, t_column)
-            return self.take_king(s_row, s_column, t_row,
-                                     t_column, gameboard, where_king)
+            return self.take_king(s_row, s_column, t_row, t_column,
+                                  gameboard, where_king, info_piece)
 
         # Le joueur n'a pas pris son pion.
         display_message("VEUILLEZ PRENDRE UNE DE VOS PIECES.", "red")
@@ -88,7 +139,7 @@ class Player():
         return {"message": PB}
 
 
-    def take_checker(self, s_row, s_column, t_row, t_column, gameboard):
+    def take_checker(self, s_row, s_column, t_row, t_column, gameboard, info_checker):
         """
         Détermine le type de mouvement voulu par le joueur avec son pion.
 
@@ -122,38 +173,50 @@ class Player():
                 indique que la pièce est un Checker.
         """
 
+        # Le joueur est dans le cas où un pion peut manger une pièce adverse,
+        # donc le joueur doit jouer ce pion pour gagner un point.
+        if info_checker["bool"] == True:
+            if info_checker["target_rd"] == RIGHT_DOWN and (t_row == s_row+2 and t_column == s_column+2)\
+                    and self.checker_capture_RIGHT_DOWN(gameboard, s_row, s_column):
+                return {"message": I_CAPTURE, "target": RIGHT_DOWN, "type": CHECKER}
+
+            elif info_checker["target_ld"] == LEFT_DOWN and (t_row == s_row+2 and t_column == s_column-2) \
+                    and self.checker_capture_LEFT_DOWN(gameboard, s_row, s_column):
+                return {"message": I_CAPTURE, "target": LEFT_DOWN, "type": CHECKER}
+
+            elif info_checker["target_ru"] == RIGHT_UP and (t_row == s_row-2 and t_column == s_column+2) \
+                    and self.checker_capture_RIGHT_UP(gameboard, s_row, s_column):
+                return {"message": I_CAPTURE, "target": RIGHT_UP, "type": CHECKER}
+
+            elif info_checker["target_lu"] == LEFT_UP and (t_row == s_row-2 and t_column == s_column-2) \
+                    and self.checker_capture_LEFT_UP(gameboard, s_row, s_column):
+                return {"message": I_CAPTURE, "target": LEFT_UP, "type": CHECKER}
+
+        # Le joueur est dans le cas où il peut faire ce qu'il veut.
         # Le joueur le met dans une case acceptée pour bouger (en bas pour J1, en haut pour J2).
-        if t_row == s_row+self.factor and (t_column == s_column+1 or t_column == s_column-1) \
+        elif t_row == s_row+self.factor and (t_column == s_column+1 or t_column == s_column-1) \
                 and gameboard[t_row][t_column] == 0:
             return {"message": I_M_ON_MY_WAY, "target": None, "type": CHECKER}
 
         # Le joueur le met sur une case acceptée pour manger: 4 cas différents.
         #En bas à droite
         elif (t_row == s_row+2 and t_column == s_column+2) \
-                and gameboard[t_row][t_column] == 0 \
-                and (gameboard[s_row+1][s_column+1] == self.opponent_number \
-                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
+                and self.checker_capture_RIGHT_DOWN(gameboard, s_row, s_column):
             return {"message": I_CAPTURE, "target": RIGHT_DOWN, "type": CHECKER}
 
         #En bas à gauche
         elif (t_row == s_row+2 and t_column == s_column-2) \
-                and gameboard[t_row][t_column] == 0 \
-                and (gameboard[s_row+1][s_column-1] == self.opponent_number \
-                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
+                and self.checker_capture_LEFT_DOWN(gameboard, s_row, s_column):
             return {"message": I_CAPTURE, "target": LEFT_DOWN, "type": CHECKER}
 
         #En haut à droite
         elif (t_row == s_row-2 and t_column == s_column+2) \
-                and gameboard[t_row][t_column] == 0 \
-                and (gameboard[s_row-1][s_column+1] == self.opponent_number\
-                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
+                and self.checker_capture_RIGHT_UP(gameboard, s_row, s_column):
             return {"message": I_CAPTURE, "target": RIGHT_UP, "type": CHECKER}
 
         #En haut à gauche
         elif (t_row == s_row-2 and t_column == s_column-2) \
-                and gameboard[t_row][t_column] == 0 \
-                and (gameboard[s_row-1][s_column-1] == self.opponent_number\
-                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5):
+                and self.checker_capture_LEFT_UP(gameboard, s_row, s_column):
             return {"message": I_CAPTURE, "target": LEFT_UP, "type": CHECKER}
 
         # Le joueur ne met pas de bonnes coordonnées.
@@ -194,7 +257,7 @@ class Player():
         return LEFT_UP
 
 
-    def take_king(self, s_row, s_column, t_row, t_column, gameboard, where_king):
+    def take_king(self, s_row, s_column, t_row, t_column, gameboard, where_king, coords_pieces, must_capture):
         """
         Détermine le type de mouvement voulu par le joueur avec sa dame.
 
@@ -294,7 +357,7 @@ class Player():
                         % (self.opponent_number), "black")
 
 
-    def can_capture_again_with_checker(self, gameboard, s_row, s_column):
+    def can_capture_with_checker(self, gameboard, s_row, s_column):
         """
         On est dans le cas où le joueur vient de prendre une pièce adverse avec son pion.
         Il ne peut rejouer que si il peut reprendre une pièce adverse.
@@ -324,46 +387,37 @@ class Player():
         """
 
         #On considère au début qu'il n'y a pas de possibilité de rejouer.
-        play_again = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
-
+        play_capture = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
         #On vérifie les cases en diagonales voisines si elles sont occupées par une pièce adverse
         # et que la case encore après est vide en faisant attention aux limites du terrain.
         #En bas à droite
-        if (s_row < 8 and s_column > 1) \
-                and (gameboard[s_row+1][s_column+1] == self.opponent_number \
-                or gameboard[s_row+1][s_column+1] == self.opponent_number+0.5)\
-                and gameboard[s_row+2][s_column+2] == 0:
-            play_again["bool"] = True
-            play_again["target_rd"] = RIGHT_DOWN
+        if (s_row < 8 and s_column < 8) \
+                and self.checker_capture_RIGHT_DOWN(gameboard, s_row, s_column):
+            play_capture["bool"] = True
+            play_capture["target_rd"] = RIGHT_DOWN
 
         #En bas à gauche
         if (s_row < 8 and s_column > 1) \
-                and (gameboard[s_row+1][s_column-1] == self.opponent_number \
-                or gameboard[s_row+1][s_column-1] == self.opponent_number+0.5) \
-                and gameboard[s_row+2][s_column-2] == 0:
-            play_again["bool"] = True
-            play_again["target_ld"] = LEFT_DOWN
+                and self.checker_capture_LEFT_DOWN(gameboard, s_row, s_column):
+            play_capture["bool"] = True
+            play_capture["target_ld"] = LEFT_DOWN
 
         #En haut à droite
         if (s_row > 1 and s_column < 8) \
-                and (gameboard[s_row-1][s_column+1] == self.opponent_number \
-                or gameboard[s_row-1][s_column+1] == self.opponent_number+0.5) \
-                and gameboard[s_row-2][s_column+2] == 0:
-            play_again["bool"] = True
-            play_again["target_ru"] = RIGHT_UP
+                and self.checker_capture_RIGHT_UP(gameboard, s_row, s_column):
+            play_capture["bool"] = True
+            play_capture["target_ru"] = RIGHT_UP
 
         #En haut à gauche
         if (s_row > 1 and s_column > 1) \
-                and (gameboard[s_row-1][s_column-1] == self.opponent_number \
-                or gameboard[s_row-1][s_column-1] == self.opponent_number+0.5) \
-                and gameboard[s_row-2][s_column-2] == 0:
-            play_again["bool"] = True
-            play_again["target_lu"] = LEFT_UP
+                and self.checker_capture_LEFT_UP(gameboard, s_row, s_column):
+            play_capture["bool"] = True
+            play_capture["target_lu"] = LEFT_UP
 
-        return play_again
+        return play_capture
 
 
-    def can_capture_again_with_king(self, gameboard, s_row, s_column):
+    def can_capture_with_king(self, gameboard, s_row, s_column):
         """
         Détermine si le joueur peut rejouer.
 
@@ -395,7 +449,7 @@ class Player():
         """
 
         #On considère au début qu'on ne remplit aucune condition.
-        play_again = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
+        play_capture = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
 
         #Vérification en descendant sur le plateau en faisant attention aux limites.
         col_right = s_column
@@ -408,16 +462,16 @@ class Player():
                     and (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
                     and gameboard[row+1][col_right+1] == 0:
-                play_again["bool"] = True
-                play_again["target_rd"] = RIGHT_DOWN
+                play_capture["bool"] = True
+                play_capture["target_rd"] = RIGHT_DOWN
 
             #A gauche
             if col_left > 0 \
                     and (gameboard[row][col_left] == self.opponent_number \
                     or gameboard[row][col_left] == self.opponent_number+0.5) \
                     and gameboard[row+1][col_left-1] == 0:
-                play_again["bool"] = True
-                play_again["target_ld"] = LEFT_DOWN
+                play_capture["bool"] = True
+                play_capture["target_ld"] = LEFT_DOWN
 
             col_right +=1
             col_left -= 1
@@ -434,22 +488,22 @@ class Player():
                     and (gameboard[row][col_right] == self.opponent_number \
                     or gameboard[row][col_right] == self.opponent_number+0.5) \
                     and gameboard[row-1][col_right+1] == 0:
-                play_again["bool"] = True
-                play_again["target_ru"] = RIGHT_UP
+                play_capture["bool"] = True
+                play_capture["target_ru"] = RIGHT_UP
 
             #A gauche
             if col_left > 0 \
                     and (gameboard[row][col_left] == self.opponent_number \
                     or gameboard[row][col_left] == self.opponent_number+0.5) \
                     and gameboard[row-1][col_left-1] == 0:
-                play_again["bool"] = True
-                play_again["target_lu"] = LEFT_UP
+                play_capture["bool"] = True
+                play_capture["target_lu"] = LEFT_UP
 
             col_right +=1
             col_left -= 1
             row -= 1
 
-        return play_again
+        return play_capture
 
 
 
@@ -470,15 +524,29 @@ class Human(Player):
         super().__init__(number, score, opponent_number, factor)
 
 
-    def define_possible(self, gameboard):
-        possible_choice = {}
+    def where_piece(self, gameboard):
+        coords_pieces = {}
         index = 1
         for i in range(10):
             for j in range(10):
-                if gameboard[i][j] == self.number:
-                    possible_choice[str(index)] = [i,j]
+                if gameboard[i][j] == self.number \
+                        or gameboard[i][j] == self.number +0.5:
+                    coords_pieces[index] = [gameboard[i][j], i, j]
                     index += 1
-        return possible_choice
+        return [coords_pieces, index-1]
+
+
+    def must_capture(self, gameboard):
+        coords_pieces = self.where_piece(gameboard)[0]
+        index_max = self.where_piece(gameboard)[1]
+        must_capture = {}
+        for index in range(index_max):
+            coords = coords_pieces[index+1]
+            if coords[0] == self.number:
+                must_capture[index+1] = self.can_capture_with_checker(gameboard, coords[1], coords[2])
+            else:
+                must_capture[index+1] = self.can_capture_with_king(gameboard, coords[1], coords[2])
+        return must_capture
 
 
     def choose_s_row(self, gameboard):
@@ -512,7 +580,7 @@ class Human(Player):
                    "Veuillez rentrer des coordonnées de cases.", "red")
                display_message(
                    "Les lignes et les colonnes commencent à 1 !", "black")
-               Checkerboard.view()
+               view(gameboard)
         return start_row - 1
 
 
@@ -546,7 +614,7 @@ class Human(Player):
                     "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
-                Checkerboard.view()
+                view(gameboard)
 
         return start_column - 1
 
@@ -581,7 +649,7 @@ class Human(Player):
                     "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
-                Checkerboard.view()
+                view(gameboard)
 
         return target_row - 1
 
@@ -616,7 +684,7 @@ class Human(Player):
                     "Veuillez rentrer des coordonnées de cases.", "red")
                 display_message(
                     "Les lignes et les colonnes commencent à 1 !", "black")
-                Checkerboard.view()
+                view(gameboard)
 
         return target_column - 1
 
