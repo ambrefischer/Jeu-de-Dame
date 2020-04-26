@@ -170,7 +170,6 @@ def play_turn(player_turn, J1, J2, gameboard):
         "Joueur %d, à vous de jouer. Votre score est de %d."
         % (player.number, player.score)
     )
-
     # Choix du déplacement
     coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
               "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}

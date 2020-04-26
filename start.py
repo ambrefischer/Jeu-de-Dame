@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
 
     # Jeu
-    while J1.score < 20 or J2.score < 20:
+    while J1.where_piece(gameboard)[1] != 0 and J2.where_piece(gameboard)[1] != 0:
         play_turn(player_turn, J1, J2, gameboard)
         view(gameboard)
         player_turn["player_number"] += 1

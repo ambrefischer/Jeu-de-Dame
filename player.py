@@ -111,7 +111,7 @@ class Player():
             info_piece = must_capture[key]
             # Il existe une pièce qui peut manger une pièce adverse et le joueur doit la prendre.
             if info_piece["bool"] == True:
-                if rule_row != s_row or s_column != rule_col:
+                if rule_row != s_row or rule_col != s_column:
                     compt_wrong_move += 1
                 else:
                     compt_correct_move += 1
@@ -121,12 +121,12 @@ class Player():
             display_message("Vous devez prendre la pièce qui peut prendre un point.")
             return {"message": PB}
 
-        # Le joueur prend bien un pion et le sien.
+        # Le joueur prend bien un pion et le sien,
         if gameboard[s_row][s_column] == self.number:
             return self.take_checker(s_row, s_column, t_row, t_column,
                                      gameboard, info_piece)
 
-        # Le joueur prend une dame et la sienne.
+        # Le joueur prend une dame et la sienne,
         elif gameboard[s_row][s_column] == self.number+0.5:
             where_king = self.where_king(s_row, s_column, t_row, t_column)
             return self.take_king(s_row, s_column, t_row, t_column,
@@ -191,6 +191,10 @@ class Player():
             elif info_checker["target_lu"] == LEFT_UP and (t_row == s_row-2 and t_column == s_column-2) \
                     and self.checker_capture_LEFT_UP(gameboard, s_row, s_column):
                 return {"message": I_CAPTURE, "target": LEFT_UP, "type": CHECKER}
+
+            display_message("CE PION DOIT PRENDRE UNE PIECE ADVERSE.", "red")
+            display_message("Ce sont les règles...", "black")
+            return {"message": PB}
 
         # Le joueur est dans le cas où il peut faire ce qu'il veut.
         # Le joueur le met dans une case acceptée pour bouger (en bas pour J1, en haut pour J2).
@@ -257,7 +261,7 @@ class Player():
         return LEFT_UP
 
 
-    def take_king(self, s_row, s_column, t_row, t_column, gameboard, where_king, coords_pieces, must_capture):
+    def take_king(self, s_row, s_column, t_row, t_column, gameboard, where_king, info_king):
         """
         Détermine le type de mouvement voulu par le joueur avec sa dame.
 
@@ -296,38 +300,77 @@ class Player():
 
         # Le joueur la met sur une case acceptée pour bouger : une case sur une diagonale.
         factor_king = abs(t_row - s_row)
+        piece_blocking = False
         if abs(t_column - s_column) == factor_king and int(gameboard[t_row][t_column]) == 0:
 
             # La dame mange-t-elle une pièce au passage?
             count_capture = []
+            count_must_capture = []
             # On parcourt toute la diagonale pour savoir combien de pièces elle mange
-            for distance in range(factor_king):
+            for distance in range(1, factor_king):
                 row_down = s_row + distance
                 row_up = s_row - distance
                 col_right = s_column + distance
                 col_left = s_column - distance
-                if where_king == RIGHT_UP and (gameboard[row_up][col_right] == self.opponent_number\
+
+                #Le joueur est dans le cas où un pion peut manger une pièce adverse,
+                #donc le joueur doit jouer ce pion pour gagner un point.
+                if info_king["bool"] == True:
+                    if where_king == RIGHT_UP and (gameboard[row_up][col_right] == self.opponent_number \
+                            or gameboard[row_up][col_right] == self.opponent_number + 0.5):
+                        count_must_capture.append([row_up, col_right])
+                    elif where_king == LEFT_UP and (gameboard[row_up][col_left] == self.opponent_number \
+                            or gameboard[row_up][col_left] == self.opponent_number + 0.5):
+                        count_must_capture.append([row_up, col_left])
+                    elif where_king == RIGHT_DOWN and (gameboard[row_down][col_right] == self.opponent_number \
+                            or gameboard[row_down][col_right] == self.opponent_number + 0.5):
+                        count_must_capture.append([row_down, col_right])
+                    elif where_king == LEFT_DOWN and (gameboard[row_down][col_left] == self.opponent_number \
+                            or gameboard[row_down][col_left] == self.opponent_number + 0.5):
+                        count_must_capture.append([row_down, col_left])
+
+                elif where_king == RIGHT_UP and (gameboard[row_up][col_right] == self.opponent_number\
                         or gameboard[row_up][col_right] == self.opponent_number+0.5):
                     count_capture.append([row_up, col_right])
+
                 elif where_king == LEFT_UP and (gameboard[row_up][col_left] == self.opponent_number\
                         or gameboard[row_up][col_left] == self.opponent_number+0.5):
                     count_capture.append([row_up, col_left])
+
                 elif where_king == RIGHT_DOWN and (gameboard[row_down][col_right] == self.opponent_number\
                         or gameboard[row_down][col_right] == self.opponent_number+0.5):
                     count_capture.append([row_down, col_right])
+
                 elif where_king == LEFT_DOWN and (gameboard[row_down][col_left] == self.opponent_number\
                         or gameboard[row_down][col_left] == self.opponent_number+0.5):
                     count_capture.append([row_down, col_left])
 
+                # On vérifie qu'aucun de ses propres joueurs ne gène la diagonale.
+                if gameboard[row_up][col_right] == self.number or gameboard[row_up][col_right] == self.number + 0.5 \
+                        or gameboard[row_up][col_left] == self.number or gameboard[row_up][col_left] == self.number+0.5 \
+                        or gameboard[row_down][col_right] == self.number or gameboard[row_down][col_right] == self.number+0.5 \
+                        or gameboard[row_down][col_left] == self.number or gameboard[row_down][col_left] == self.number+0.5:
+                    piece_blocking = True
+
             # Vérification que la dame ne prenne qu'un pion à la fois.
-            if len(count_capture) == 1:
+            if len(count_must_capture) == 1 and piece_blocking == False:
+                return {"message": I_CAPTURE, "target": where_king, "opponent_row": count_must_capture[0][0],
+                        "opponent_col": count_must_capture[0][1], "type": KING}
+
+            elif len(count_capture) == 1 and piece_blocking == False:
                 return {"message": I_CAPTURE, "target": where_king, "opponent_row": count_capture[0][0],
                         "opponent_col": count_capture[0][1], "type": KING}
-            elif len(count_capture) > 1:
+
+            elif len(count_must_capture) >1 or len(count_capture) > 1 or piece_blocking == True:
                 display_message(
                     "VOUS NE POUVEZ PAS PLACER VOTRE DAME ICI. RECOMMENCEZ.", "red")
                 display_message("PS : Une Dame ne peut prendre qu'un joueur à la fois, sachez-le !" + "\n" +
                                 "Heureusement que je sais coder sinon vous pourriez tricher !", "black")
+                return {"message": PB}
+
+            elif info_king["bool"] == True and len(count_must_capture) == 0:
+                display_message("VOTRE DAME DOIT PRENDRE UNE PIECE ENNEMIE.", "red")
+                display_message("Ce sont les règles...", "black")
                 return {"message": PB}
 
             # Si la dame ne mange aucun pion alors elle se déplace juste.
@@ -450,11 +493,12 @@ class Player():
 
         #On considère au début qu'on ne remplit aucune condition.
         play_capture = {"bool": False, "target_rd": None, "target_ld": None, "target_ru": None, "target_lu": None}
+        piece_blocking = False
 
         #Vérification en descendant sur le plateau en faisant attention aux limites.
-        col_right = s_column
-        col_left = s_column
-        row = s_row
+        col_right = s_column + 1
+        col_left = s_column - 1
+        row = s_row + 1
 
         while row < 9:
             #A droite
@@ -473,14 +517,19 @@ class Player():
                 play_capture["bool"] = True
                 play_capture["target_ld"] = LEFT_DOWN
 
+            if (col_right < 9 and col_left > 0) and play_capture["bool"] == False \
+                    and (gameboard[row][col_right] == self.number or gameboard[row][col_right] == self.number + 0.5 \
+                    or gameboard[row][col_left] == self.number or gameboard[row][col_left] == self.number + 0.5):
+                piece_blocking = True
+
             col_right +=1
             col_left -= 1
             row += 1
 
         #Vérification en montant sur le plateau en faisant attention aux limites.
-        col_right = s_column
-        col_left = s_column
-        row = s_row
+        col_right = s_column + 1
+        col_left = s_column - 1
+        row = s_row - 1
 
         while row > 0:
             #A droite
@@ -499,9 +548,17 @@ class Player():
                 play_capture["bool"] = True
                 play_capture["target_lu"] = LEFT_UP
 
+            if (col_right < 9 and col_left > 0) and play_capture["bool"] == False \
+                    and (gameboard[row][col_right] == self.number or gameboard[row][col_right] == self.number + 0.5 \
+                    or gameboard[row][col_left] == self.number or gameboard[row][col_left] == self.number + 0.5):
+                piece_blocking = True
+
             col_right +=1
             col_left -= 1
             row -= 1
+
+        if piece_blocking == True:
+            play_capture["bool"] = False
 
         return play_capture
 
