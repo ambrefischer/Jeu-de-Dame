@@ -6,11 +6,12 @@ Project : Jeu de Dames
 """
 
 from piece import Checker, King
-from player import Human  # , IA
+from player import Human, IA
 from gameboard import *
-from utils import *
 from constants import *
 from highscore import *
+from random import *
+import numpy as np
 
 
 
@@ -34,9 +35,16 @@ def play_with():
     if choice == "joueur":
         return Human(1, 0, 2, 1)
 
+    elif choice == "ordi":
+        correct = False
+        while correct == False:
+            level_choice = input("veuillez choisir la difficulté de l'ordi parmi celles proposées: 'facile' \n")
+            if level_choice == "facile":
+                return IA(1,0,2,1,"facile")
+            else: display_message("Le niveau de difficulté choisi n'est pas disponible")
+
     display_message("Les autres modes ne sont pas encore disponibles...")
     return Human(1, 0, 2, 1)
-
 
 def initialisation(J1, J2):
     """
@@ -79,7 +87,7 @@ def initialisation(J1, J2):
     view(gameboard)
 
     # Définition du tour du premier joueur
-    first_turn = {"player_number": 1.0, "status": None}
+    first_turn = {"player_number": 2.0, "status": None}
 
     return {"player_turn": first_turn, "gameboard": gameboard}
 
@@ -170,11 +178,22 @@ def play_turn(player_turn, J1, J2, gameboard):
         "Joueur %d, à vous de jouer. Votre score est de %d."
         % (player.number, player.score)
     )
+
+    #Si le joueur est un humain
+    if isinstance(player, Human) == True:
+        human_play_turn(player_turn, player, gameboard, coords_pieces, must_capture)
+
+    # Si le joueur est l'ordi
+    else:
+        IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture)
+
+
+def human_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
     # Choix du déplacement
     coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
-              "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+            "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
     make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
-                                  coords["t_row"], coords["t_column"], gameboard, coords_pieces, must_capture)
+                                coords["t_row"], coords["t_column"], gameboard, coords_pieces, must_capture)
 
     # Problème dans les coordonnées
     while make_a_move["message"] == PB:
@@ -223,6 +242,70 @@ def play_turn(player_turn, J1, J2, gameboard):
     #Le joueur a fini de jouer.
     player_turn["status"] = END_OF_TURN
 
+
+def IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
+
+    possible_capture = len(must_capture)
+
+    #Si le pion se déplace juste.
+    if possible_capture == 0:
+        possible_move = []
+        nb_pieces = player.where_piece(gameboard)[1]
+        #On teste tous les coups possibles de toutes les pièces.
+        for index in range(nb_pieces):
+            coords = coords_pieces[index + 1]
+            row_possible = coords[1] + player.factor
+            col_possible = coords[2] + 1
+            #déplacement à droite
+            if col_possible < 10 and gameboard[row_possible][col_possible] == 0:
+                possible_move.append([index + 1, row_possible, col_possible])
+            col_possible = coords[2] - 1
+            #déplacement à gauche
+            if col_possible >= 0 and gameboard[row_possible][col_possible] == 0:
+                possible_move.append([index + 1, row_possible, col_possible])
+        #On détermine quel mouvement l'ordi peut faire.
+        n = len(possible_move)
+        index2 = np.random.randint(0, n)  # détermine aléatoirement le coup joué
+        print(possible_move)
+        move_kept = possible_move[index2]
+
+        Piece = Checker(coords_pieces[move_kept[0]][1], coords_pieces[move_kept[0]][2],
+                        move_kept[1], move_kept[2], player.number)
+        gameboard = Piece.move(gameboard)
+
+        if Piece.check_king() == True:
+            Piece.become_king(gameboard)
+
+    #La pièce peut prendre une pièce adverse.
+    else:
+        # On détermine aléatoirement la pièce qui sera déplacée et celle qui sera prise
+        index2 = np.random.randint(0, possible_capture)
+
+        #Si la pièce est un pion.
+        if must_capture[index2][0] == player.number:
+            Piece = Checker(must_capture[index2][1][0], must_capture[index2][1][1], must_capture[index2][3][0],
+                            must_capture[index2][3][1], player.number)
+            gameboard = Piece.move(gameboard)
+            gameboard[must_capture[index2][2][0]][must_capture[index2][2][1]] = 0
+            player.win_one_point()
+
+        #Si la pièce est une dame.
+        else:
+            # nombre de position possibles pour la dame après la prise
+            compt = must_capture[index2][3]
+            # choisi une position aléatoire
+            add = np.random.randint(1, compt + 1)
+            sign_row = (must_capture[index2][1][0] - must_capture[index2][2][0]) / abs(
+                must_capture[index2][1][0] - must_capture[index2][2][0])
+            sign_column = (must_capture[index2][1][1] - must_capture[index2][2][1]) / abs(
+                must_capture[index2][1][1] - must_capture[index2][2][1])
+
+            Piece = King(must_capture[index2][1][0], must_capture[index2][1][1],
+                         must_capture[index2][2][0] + sign_row * add,
+                         must_capture[index2][2][1] + sign_column * add, player.number)
+            gameboard = Piece.move(gameboard)
+            gameboard[must_capture[index2][2][0]][must_capture[index2][2][1]] = 0
+            player.win_one_point()
 
 def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard):
     """

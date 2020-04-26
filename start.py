@@ -9,10 +9,13 @@ Ce fichier est à faire tourner pour lancer le programme.
 
 
 from game import *
-import numpy as np
+from appIHM import MonAppli
+from PyQt5 import QtGui, QtCore, QtWidgets, uic
+import sys
 
 
 if __name__ == "__main__":
+
     display_beginning()
     nickname = input("Veuillez indiquer un surnom : ")
 

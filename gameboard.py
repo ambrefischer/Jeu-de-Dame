@@ -9,38 +9,38 @@ import numpy as np
 from utils import *
 
 
-def create_gameboard(J1, J2):
-    gameboard = np.zeros((10, 10))
-    gameboard[2][2] = 1.5
-    gameboard[7][7] = 2
-    return gameboard
-
 # def create_gameboard(J1, J2):
-#     """
-#     Création d'un plateau initial avec 20 pions du joueur 1
-#     et 20 pions du joueur 2. Les cases 0 représentent des cases vides.
-#
-#     Paramètres
-#     ----------
-#     J1, J2: player.Human
-#         Contient le numéro des joueurs.
-#
-#     Renvoie
-#     ----------
-#     gameboard: array
-#         Définit le plateau initial.
-#     """
-#
 #     gameboard = np.zeros((10, 10))
-#     for k in range(4):
-#         for j in range(10):
-#             if (k+j) % 2 == 1:
-#                 gameboard[k][j] = J1.number
-#     for k in range(6, 10):
-#         for j in range(10):
-#             if (k+j) % 2 == 1:
-#                 gameboard[k][j] = J2.number
+#     gameboard[2][2] = 1
+#     gameboard[7][7] = 2
 #     return gameboard
+
+def create_gameboard(J1, J2):
+    """
+    Création d'un plateau initial avec 20 pions du joueur 1
+    et 20 pions du joueur 2. Les cases 0 représentent des cases vides.
+
+    Paramètres
+    ----------
+    J1, J2: player.Human
+        Contient le numéro des joueurs.
+
+    Renvoie
+    ----------
+    gameboard: array
+        Définit le plateau initial.
+    """
+
+    gameboard = np.zeros((10, 10))
+    for k in range(4):
+        for j in range(10):
+            if (k+j) % 2 == 1:
+                gameboard[k][j] = J1.number
+    for k in range(6, 10):
+        for j in range(10):
+            if (k+j) % 2 == 1:
+                gameboard[k][j] = J2.number
+    return gameboard
 
 
 
@@ -85,3 +85,10 @@ def out_of_bounds(s_row, s_column, t_row, t_column):
             "VEUILLEZ SAISIR DES COORDONNEES SUR LE PLATEAU.", "red")
         display_message("Allez, on recommence...", "black")
         return True
+
+
+def out_of_bounds2(coords):
+    if coords[0]<1 or coords[0]>9 or coords[1]<0 or coords[1]>9:
+        return True
+    else:
+        return False

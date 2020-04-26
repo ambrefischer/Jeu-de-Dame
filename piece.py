@@ -54,7 +54,7 @@ class Piece():
         gameboard: array
             Plateau modifié après avoir déplacé la pièce.
         """
-
+        print(self.t_row, self.t_column, self.s_row, self.s_column)
         #La case cible prend le contenu de la case de départ: caractérise un déplacement.
         gameboard[self.t_row][self.t_column] = gameboard[self.s_row][self.s_column]
         #La case de départ devient une case vide.

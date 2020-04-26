@@ -563,6 +563,16 @@ class Player():
         return play_capture
 
 
+    def where_piece(self, gameboard):
+        coords_pieces = {}
+        index = 1
+        for i in range(10):
+            for j in range(10):
+                if gameboard[i][j] == self.number \
+                        or gameboard[i][j] == self.number +0.5:
+                    coords_pieces[index] = [gameboard[i][j], i, j]
+                    index += 1
+        return [coords_pieces, index-1]
 
 
 
@@ -581,23 +591,11 @@ class Human(Player):
         super().__init__(number, score, opponent_number, factor)
 
 
-    def where_piece(self, gameboard):
-        coords_pieces = {}
-        index = 1
-        for i in range(10):
-            for j in range(10):
-                if gameboard[i][j] == self.number \
-                        or gameboard[i][j] == self.number +0.5:
-                    coords_pieces[index] = [gameboard[i][j], i, j]
-                    index += 1
-        return [coords_pieces, index-1]
-
-
     def must_capture(self, gameboard):
         coords_pieces = self.where_piece(gameboard)[0]
-        index_max = self.where_piece(gameboard)[1]
+        nb_pieces = self.where_piece(gameboard)[1]
         must_capture = {}
-        for index in range(index_max):
+        for index in range(nb_pieces):
             coords = coords_pieces[index+1]
             if coords[0] == self.number:
                 must_capture[index+1] = self.can_capture_with_checker(gameboard, coords[1], coords[2])
@@ -746,7 +744,121 @@ class Human(Player):
         return target_column - 1
 
 
+class IA(Player):
+
+    def __init__(self, number, score, opponent_number, factor, level):
+        super().__init__(number, score, opponent_number, factor)
+        self.level = level
 
 
+    def must_capture(self, gameboard):  # défini la liste des prises possibles pour l'IA
+        must_capture = []
+        coords_pieces, nb_pieces = self.where_piece(gameboard)[0], self.where_piece(gameboard)[1]
+        for index in range(nb_pieces):
+            coords = coords_pieces[index + 1]
 
-# class IA():
+            # permet de déterminer les pions pouvant capturer une pièce adverse
+            if coords[0] == self.number:
+                angle1 = [coords[1] + 1, coords[2] + 1]
+                angle2 = [coords[1] + 1, coords[2] - 1]
+                angle3 = [coords[1] - 1, coords[2] + 1]
+                angle4 = [coords[1] - 1, coords[2] - 1]
+
+                destination1 = [coords[1] + 2, coords[2] + 2]
+                destination2 = [coords[1] + 2, coords[2] - 2]
+                destination3 = [coords[1] - 2, coords[2] + 2]
+                destination4 = [coords[1] - 2, coords[2] - 2]
+
+                if out_of_bounds2(destination1) == False and gameboard[angle1[0]][
+                    angle1[1]] // 1 == self.opponent_number and gameboard[destination1[0]][destination1[1]] == 0:
+                    # retient la position initiale, la position qui peut être jouée, la position de la pièce prise et le type de pièce à déplacer
+                    must_capture.append([self.number, [coords[1], coords[2]], angle1,
+                                         destination1])
+                if out_of_bounds2(destination2) == False and gameboard[angle2[0]][
+                    angle2[1]] // 1 == self.opponent_number and gameboard[destination2[0]][destination2[1]] == 0:
+                    # retient la position initiale, la position qui peut être jouée, la position de la pièce prise et le type de pièce à déplacer
+                    must_capture.append([self.number, [coords[1], coords[2]], angle2,
+                                         destination2])
+                if out_of_bounds2(destination3) == False and gameboard[angle3[0]][
+                    angle3[1]] // 1 == self.opponent_number and gameboard[destination3[0]][destination3[1]] == 0:
+                    # retient la position initiale, la position qui peut être jouée, la position de la pièce prise et le type de pièce à déplacer
+                    must_capture.append([self.number, [coords[1], coords[2]], angle3,
+                                         destination3])
+                if out_of_bounds2(destination4) == False and gameboard[angle4[0]][
+                    angle4[1]] // 1 == self.opponent_number and gameboard[destination4[0]][destination4[1]] == 0:
+                    # retient la position initiale, la position qui peut être jouée, la position de la pièce prise et le type de pièce à déplacer
+                    must_capture.append([self.number, [coords[1], coords[2]], angle4,
+                                         destination4])
+
+            # permet de déterminer les dames pouvant capturer une pièce adverse
+            elif coords[0] == self.number + 0.5:
+
+                # recherche vers le haut et à droite:
+                k = 0
+                while out_of_bounds2([coords[1] + k + 1, coords[2] + k + 1]) == False and gameboard[coords[1] + k + 1][
+                    coords[2] + k + 1] == 0:
+                    k += 1
+                if out_of_bounds2([coords[1] + k + 2, coords[2] + k + 2]) == False and gameboard[coords[1] + k + 1][
+                    coords[2] + k + 1] // 1 == self.opponent_number and gameboard[coords[1] + k + 2][
+                    coords[2] + k + 2] // 1 == 0:
+                    compteur = 1
+                    while out_of_bounds2([coords[1] + k + 2 + compteur, coords[2] + k + 2 + compteur]) == False and \
+                            gameboard[coords[1] + k + 2 + compteur][coords[2] + k + 2 + compteur] == 0:
+                        compteur += 1
+                    # retient la position initiale, la position de l'adversaire qui peut être mangé, le type de pièce et le nombre de 0 derrière la cible
+                    must_capture.append(
+                        [self.number + 0.5, [coords[1], coords[2]], [coords[1] + k + 1, coords[2] + k + 1],
+                         compteur])
+
+                # recherche vers le haut et à gauche:
+                k = 0
+                while out_of_bounds2([coords[1] + k + 1, coords[2] - k - 1]) == False and gameboard[coords[1] + k + 1][
+                    coords[2] - k - 1] == 0:
+                    k += 1
+                if out_of_bounds2([coords[1] + k + 2, coords[2] - k - 2]) == False and gameboard[coords[1] + k + 1][
+                    coords[2] - k - 1] // 1 == self.opponent_number and gameboard[coords[1] + k + 2][
+                    coords[2] - k - 2] // 1 == 0:
+                    compteur = 1
+                    while out_of_bounds2([coords[1] + k + 2 + compteur, coords[2] - k - 2 - compteur]) == False and \
+                            gameboard[coords[1] + k + 2 + compteur][coords[2] - k - 2 - compteur] == 0:
+                        compteur += 1
+                    # retient la position initiale, la position de l'adversaire qui peut être mangé, le type de pièce et le nombre de 0 derrière la cible
+                    must_capture.append(
+                        [self.number + 0.5, [coords[1], coords[2]], [coords[1] + k + 1, coords[2] - k - 1],
+                         compteur])
+
+                # recherche vers le bas et à droite:
+                k = 0
+                while out_of_bounds2([coords[1] - k - 1, coords[2] + k + 1]) == False and gameboard[coords[1] - k - 1][
+                    coords[2] + k + 1] == 0:
+                    k += 1
+                if out_of_bounds2([coords[1] - k - 2, coords[2] + k + 2]) == False and gameboard[coords[1] - k - 1][
+                    coords[2] + k + 1] // 1 == self.opponent_number and gameboard[coords[1] - k - 2][
+                    coords[2] + k + 2] // 1 == 0:
+                    compteur = 1
+                    while out_of_bounds2([coords[1] - k - 2 - compteur, coords[2] + k + 2 + compteur]) == False and \
+                            gameboard[coords[1] - k - 2 - compteur][coords[2] + k + 2 + compteur] == 0:
+                        compteur += 1
+                    # retient la position initiale, la position de l'adversaire qui peut être mangé, le type de pièce et le nombre de 0 derrière la cible
+                    must_capture.append(
+                        [self.number + 0.5, [coords[1], coords[2]], [coords[1] - k - 1, coords[2] + k + 1],
+                         compteur])
+
+                # recherche vers le bas et à gauche:
+                k = 0
+                while out_of_bounds2([coords[1] - k - 1, coords[2] - k - 1]) == False and gameboard[coords[1] - k - 1][
+                    coords[2] - k - 1] == 0:
+                    k += 1
+                if out_of_bounds2([coords[1] - k - 2, coords[2] - k - 2]) == False and gameboard[coords[1] - k - 1][
+                    coords[2] - k - 1] // 1 == self.opponent_number and gameboard[coords[1] - k - 2][
+                    coords[2] - k - 2] // 1 == 0:
+                    compteur = 1
+                    while out_of_bounds2([coords[1] - k - 2 - compteur, coords[2] - k - 2 - compteur]) == False and \
+                            gameboard[coords[1] - k - 2 - compteur][coords[2] - k - 2 - compteur] == 0:
+                        compteur += 1
+                    # retient la position initiale, la position de l'adversaire qui peut être mangé, le type de pièce et le nombre de 0 derrière la cible
+                    must_capture.append(
+                        [self.number + 0.5, [coords[1], coords[2]], [coords[1] - k - 1, coords[2] - k - 1],
+                         compteur])
+
+        return must_capture
