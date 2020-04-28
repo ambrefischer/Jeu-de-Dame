@@ -57,6 +57,36 @@
      <string>Enregistrer</string>
     </property>
    </widget>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>270</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bout_commencer">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>130</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Commencer</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -71,7 +101,15 @@
     <property name="title">
      <string>Files</string>
     </property>
+    <widget class="QMenu" name="menuMode_de_jeu">
+     <property name="title">
+      <string>Mode de jeu</string>
+     </property>
+     <addaction name="action2_joueurs"/>
+     <addaction name="actionordinateur"/>
+    </widget>
     <addaction name="actionQuitter"/>
+    <addaction name="menuMode_de_jeu"/>
    </widget>
    <addaction name="menuFiles"/>
   </widget>
@@ -83,6 +121,16 @@
    </property>
    <property name="text">
     <string>Quitter</string>
+   </property>
+  </action>
+  <action name="action2_joueurs">
+   <property name="text">
+    <string>2 joueurs</string>
+   </property>
+  </action>
+  <action name="actionordinateur">
+   <property name="text">
+    <string>ordinateur</string>
    </property>
   </action>
  </widget>

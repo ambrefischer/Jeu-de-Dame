@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainWinow</class>
+ <widget class="QMainWindow" name="mainWinow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>668</width>
+    <height>515</height>
+   </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Jeu de dames</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/main icon.jpg</normaloff>icons/main icon.jpg</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="bout_continuer">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>440</y>
+      <width>81</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Continuer</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Text_choix">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>380</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choisissez le mode de jeu :</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="edit_surnom">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>390</y>
+      <width>201</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="text_surnom">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>390</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Surnom :</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="check_joueur">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>410</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>Joueur</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+    <property name="autoExclusive">
+     <bool>true</bool>
+    </property>
+    <property name="tristate">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="check_ordi_facile">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>430</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ordi facile</string>
+    </property>
+    <property name="autoExclusive">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="check_ordi_dificile">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>450</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ordi dificile</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>561</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; background-color:#ffffff;&quot;&gt;&lt;span style=&quot; font-family:'Consolas'; font-size:8pt; font-weight:600; color:#008080;&quot;&gt;                     _                          _____ _                _               &lt;br /&gt;     /\             | |                ___     / ____| |              | |            _ &lt;br /&gt;    /  \   _ __ ___ | |__  _ __ ___   ( _ )   | |    | |__   __ _ _ __| | ___  ___  (_)&lt;br /&gt;   / /\ \ | '_ ` _ \| '_ \| '__/ _ \  / _ \/\ | |    | '_ \ / _` | '__| |/ _ \/ __|    &lt;br /&gt;  / ____ \| | | | | | |_) | | |  __/ | (_&amp;gt;  &amp;lt; | |____| | | | (_| | |  | |  __/\__ \  _ &lt;br /&gt; /_/   _\_\_| |_| |_|_.__/|_|  \___|__\___/\/  \_____|_| |_|\__,_|_|  |_|\___||___/ (_)&lt;br /&gt;      | |                | |      |  __ \                                              &lt;br /&gt;      | | ___ _   _    __| | ___  | |  | | __ _ _ __ ___   ___  ___                    &lt;br /&gt;  _   | |/ _ \ | | |  / _` |/ _ \ | |  | |/ _` | '_ ` _ \ / _ \/ __|                   &lt;br /&gt; | |__| |  __/ |_| | | (_| |  __/ | |__| | (_| | | | | | |  __/\__ \                   &lt;br /&gt;  \____/ \___|\__,_|  \__,_|\___| |_____/ \__,_|_| |_| |_|\___||___/                   &lt;br /&gt;  ______ _   _  _____ _______         ____           _                                 &lt;br /&gt; |  ____| \ | |/ ____|__   __|/\     |  _ \         | |                                &lt;br /&gt; | |__  |  \| | (___    | |  /  \    | |_) |_ __ ___| |_ __ _  __ _ _ __   ___         &lt;br /&gt; |  __| | . ` |\___ \   | | / /\ \   |  _ &amp;lt;| '__/ _ \ __/ _` |/ _` | '_ \ / _ \        &lt;br /&gt; | |____| |\  |____) |  | |/ ____ \  | |_) | | |  __/ || (_| | (_| | | | |  __/        &lt;br /&gt; |______|_| \_|_____/   |_/_/  __\_\ |____/|_|  \___|\__\__,_|\__, |_| |_|\___|        &lt;br /&gt; |  __ \         (_)    | |   |_   _|      / _|      /_ |   /\ __/ |                   &lt;br /&gt; | |__) | __ ___  _  ___| |_    | |  _ __ | |_ ___    | |  /  \___/                    &lt;br /&gt; |  ___/ '__/ _ \| |/ _ \ __|   | | | '_ \|  _/ _ \   | | / /\ \                       &lt;br /&gt; | |   | | | (_) | |  __/ |_   _| |_| | | | || (_) |  | |/ ____ \                      &lt;br /&gt; |_|   |_|  \___/| |\___|\__| |_____|_| |_|_| \___/   |_/_/    \_\                     &lt;br /&gt;                _/ |                                                                   &lt;br /&gt;               |__/                                                                                                   &lt;br /&gt;    &lt;br /&gt;Bienvenue sur le meilleur jeu qui existe.    &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>668</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFiles">
+    <property name="title">
+     <string>Files</string>
+    </property>
+    <addaction name="actionQuitter"/>
+   </widget>
+   <addaction name="menuFiles"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuitter">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/quitter.png</normaloff>icons/quitter.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quitter</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionQuitter</sender>
+   <signal>triggered()</signal>
+   <receiver>mainWinow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>349</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

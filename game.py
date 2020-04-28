@@ -10,7 +10,7 @@ from player import Human, IA
 from gameboard import *
 from constants import *
 from highscore import *
-from random import *
+from appIHM import MonAppli
 import numpy as np
 
 
@@ -191,7 +191,9 @@ def play_turn(player_turn, J1, J2, gameboard):
 def human_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
     # Choix du déplacement
     coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
-            "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+              "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+    # coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
+    #         "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
     make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
                                 coords["t_row"], coords["t_column"], gameboard, coords_pieces, must_capture)
 
