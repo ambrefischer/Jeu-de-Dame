@@ -17,7 +17,6 @@ import sys
 
 
 def letsplay():
-    print("letsplay")
     play_turn(player_turn, J1, J2, gameboard, window2)
     view(gameboard)
     window2.gameboard = gameboard

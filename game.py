@@ -80,8 +80,6 @@ def initialisation(J1, J2, appli):
     #Visualisation des meilleurs scores.
     view_highscore(appli)
 
-    display_message("Let's the game begin !")
-
     # Création du plateau
     gameboard = create_gameboard(J1, J2)
     view(gameboard)
