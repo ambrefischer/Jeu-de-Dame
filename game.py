@@ -46,7 +46,7 @@ def play_with():
     display_message("Les autres modes ne sont pas encore disponibles...")
     return Human(1, 0, 2, 1)
 
-def initialisation(J1, J2):
+def initialisation(J1, J2, appli):
     """
     Initialise le jeu.
 
@@ -78,7 +78,7 @@ def initialisation(J1, J2):
     """
 
     #Visualisation des meilleurs scores.
-    view_highscore()
+    view_highscore(appli)
 
     display_message("Let's the game begin !")
 
@@ -153,7 +153,7 @@ def choice_piece(coords, make_a_move, player):
     return Piece
 
 
-def play_turn(player_turn, J1, J2, gameboard):
+def play_turn(player_turn, J1, J2, gameboard, appli):
     """
     Simule le tour entier d'un joueur.
 
@@ -181,19 +181,18 @@ def play_turn(player_turn, J1, J2, gameboard):
 
     #Si le joueur est un humain
     if isinstance(player, Human) == True:
-        human_play_turn(player_turn, player, gameboard, coords_pieces, must_capture)
+        human_play_turn(player_turn, player, gameboard, appli, coords_pieces, must_capture)
 
     # Si le joueur est l'ordi
     else:
         IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture)
 
 
-def human_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
+def human_play_turn(player_turn, player, gameboard, appli, coords_pieces, must_capture):
     # Choix du déplacement
-    coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
-              "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
-    # coords = {"s_row": player.choose_s_row(gameboard), "s_column": player.choose_s_column(gameboard), \
-    #         "t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+    coords = {"s_row": player.choose_s_row(appli), "s_column": player.choose_s_column(appli), \
+              "t_row": player.choose_t_row(appli), "t_column": player.choose_t_column(appli)}
+
     make_a_move = player.check_coords(coords["s_row"], coords["s_column"],
                                 coords["t_row"], coords["t_column"], gameboard, coords_pieces, must_capture)
 

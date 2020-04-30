@@ -32,7 +32,7 @@ def add_player(nickname, score):
     file.close()
     
     
-def view_highscore():
+def view_highscore(appli):
     """
     Permet de visualiser les meilleurs scores.
 
@@ -44,7 +44,8 @@ def view_highscore():
     display_message("Voici les meilleurs classements sur ce jeu :")
     with open("classement.txt", "r") as file:
         for line in file:
-            print(line)
+            tot_line = line
+    appli.textBrowser.setText("Voici les meilleurs classements sur ce jeu : \n" + tot_line)
             
             
             

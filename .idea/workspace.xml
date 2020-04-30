@@ -34,7 +34,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.appIHM">
+  <component name="RunManager" selected="Python.start">
     <configuration name="Examen_Ambre_Fischer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Jeu-de-Dame" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -142,9 +142,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.start" />
         <item itemvalue="Python.appIHM" />
         <item itemvalue="Python.applicationIHM" />
-        <item itemvalue="Python.start" />
         <item itemvalue="Python.scratch_8" />
         <item itemvalue="Python.Examen_Ambre_Fischer" />
       </list>

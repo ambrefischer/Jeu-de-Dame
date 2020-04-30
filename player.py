@@ -604,7 +604,7 @@ class Human(Player):
         return must_capture
 
 
-    def choose_s_row(self, gameboard):
+    def choose_s_row(self, appli):
         """
         Demande au joueur sur quelle ligne se place sa pièce désirée.
 
@@ -624,22 +624,10 @@ class Human(Player):
         Si la coordonnée rentrée n'est pas un nombre.
         """
 
-        display_message("Les lignes et les colonnes commencent à 1 !")
-        while True:
-           try:
-               start_row = int(
-                   input("Sur quelle ligne se situe votre pion ? "))
-               break
-           except ValueError:
-               display_message(
-                   "Veuillez rentrer des coordonnées de cases.", "red")
-               display_message(
-                   "Les lignes et les colonnes commencent à 1 !", "black")
-               view(gameboard)
-        return start_row - 1
+        return appli.row[0]
 
 
-    def choose_s_column(self, gameboard):
+    def choose_s_column(self, appli):
         """
         Demande au joueur sur quelle colonne se place sa pièce désirée.
 
@@ -659,22 +647,10 @@ class Human(Player):
         Si la coordonnée rentrée n'est pas un nombre.
         """
 
-        while True:
-            try:
-                start_column = int(
-                    input("Sur quelle colonne se situe votre pion ? "))
-                break
-            except ValueError:
-                display_message(
-                    "Veuillez rentrer des coordonnées de cases.", "red")
-                display_message(
-                    "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
-
-        return start_column - 1
+        return appli.column[0]
 
 
-    def choose_t_row(self, gameboard):
+    def choose_t_row(self, appli):
         """
         Demande au joueur sur quelle ligne il veut faire avancer sa pièce.
 
@@ -694,22 +670,10 @@ class Human(Player):
         Si la coordonnée rentrée n'est pas un nombre.
         """
 
-        while True:
-            try:
-                target_row = int(
-                    input("Sur quelle ligne voulez-vous bouger votre pion ? "))
-                break
-            except ValueError:
-                display_message(
-                    "Veuillez rentrer des coordonnées de cases.", "red")
-                display_message(
-                    "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
-
-        return target_row - 1
+        return appli.row[1]
 
 
-    def choose_t_column(self, gameboard):
+    def choose_t_column(self, appli):
         """
         Demande au joueur sur quelle colonne il veut faire avancer sa pièce.
 
@@ -729,19 +693,147 @@ class Human(Player):
         Si la coordonnée rentrée n'est pas un nombre.
         """
 
-        while True:
-            try:
-                target_column = int(
-                    input("Sur quelle colonne voulez-vous bouger votre pion ? "))
-                break
-            except ValueError:
-                display_message(
-                    "Veuillez rentrer des coordonnées de cases.", "red")
-                display_message(
-                    "Les lignes et les colonnes commencent à 1 !", "black")
-                view(gameboard)
+        return appli.column[1]
 
-        return target_column - 1
+
+    # def choose_s_row(self, gameboard):
+    #     """
+    #     Demande au joueur sur quelle ligne se place sa pièce désirée.
+    #
+    #     Paramètres
+    #     ----------
+    #     gameboard: array
+    #         Définit le plateau de jeu en cours.
+    #
+    #     Renvoie
+    #     -------
+    #     start_row: int
+    #         Compris dans [1,10]
+    #         Ligne sur laquelle se situe la pièce qui va faire un mouvement.
+    #
+    #     Exception
+    #     -------
+    #     Si la coordonnée rentrée n'est pas un nombre.
+    #     """
+    #
+    #     display_message("Les lignes et les colonnes commencent à 1 !")
+    #     while True:
+    #        try:
+    #            start_row = int(
+    #                input("Sur quelle ligne se situe votre pion ? "))
+    #            break
+    #        except ValueError:
+    #            display_message(
+    #                "Veuillez rentrer des coordonnées de cases.", "red")
+    #            display_message(
+    #                "Les lignes et les colonnes commencent à 1 !", "black")
+    #            view(gameboard)
+    #     return start_row - 1
+    #
+    #
+    # def choose_s_column(self, gameboard):
+    #     """
+    #     Demande au joueur sur quelle colonne se place sa pièce désirée.
+    #
+    #     Paramètres
+    #     ----------
+    #     gameboard: array
+    #         Définit le plateau de jeu en cours.
+    #
+    #     Renvoie
+    #     -------
+    #     start_column: int
+    #         Compris dans [1,10]
+    #         Colonne sur laquelle se situe la pièce qui va faire un mouvement.
+    #
+    #     Exception
+    #     -------
+    #     Si la coordonnée rentrée n'est pas un nombre.
+    #     """
+    #
+    #     while True:
+    #         try:
+    #             start_column = int(
+    #                 input("Sur quelle colonne se situe votre pion ? "))
+    #             break
+    #         except ValueError:
+    #             display_message(
+    #                 "Veuillez rentrer des coordonnées de cases.", "red")
+    #             display_message(
+    #                 "Les lignes et les colonnes commencent à 1 !", "black")
+    #             view(gameboard)
+    #
+    #     return start_column - 1
+    #
+    #
+    # def choose_t_row(self, gameboard):
+    #     """
+    #     Demande au joueur sur quelle ligne il veut faire avancer sa pièce.
+    #
+    #     Paramètres
+    #     ----------
+    #     gameboard: array
+    #         Définit le plateau de jeu en cours.
+    #
+    #     Renvoie
+    #     -------
+    #     target_row: int
+    #         Compris dans [1,10]
+    #         Ligne sur laquelle la pièce va avancer.
+    #
+    #     Exception
+    #     -------
+    #     Si la coordonnée rentrée n'est pas un nombre.
+    #     """
+    #
+    #     while True:
+    #         try:
+    #             target_row = int(
+    #                 input("Sur quelle ligne voulez-vous bouger votre pion ? "))
+    #             break
+    #         except ValueError:
+    #             display_message(
+    #                 "Veuillez rentrer des coordonnées de cases.", "red")
+    #             display_message(
+    #                 "Les lignes et les colonnes commencent à 1 !", "black")
+    #             view(gameboard)
+    #
+    #     return target_row - 1
+    #
+    #
+    # def choose_t_column(self, gameboard):
+    #     """
+    #     Demande au joueur sur quelle colonne il veut faire avancer sa pièce.
+    #
+    #     Paramètres
+    #     ----------
+    #     gameboard: array
+    #         Définit le plateau de jeu en cours.
+    #
+    #     Renvoie
+    #     -------
+    #     target_column: int
+    #         Compris dans [1,10]
+    #         Colonne sur laquelle la pièce va avancer.
+    #
+    #     Exception
+    #     -------
+    #     Si la coordonnée rentrée n'est pas un nombre.
+    #     """
+    #
+    #     while True:
+    #         try:
+    #             target_column = int(
+    #                 input("Sur quelle colonne voulez-vous bouger votre pion ? "))
+    #             break
+    #         except ValueError:
+    #             display_message(
+    #                 "Veuillez rentrer des coordonnées de cases.", "red")
+    #             display_message(
+    #                 "Les lignes et les colonnes commencent à 1 !", "black")
+    #             view(gameboard)
+    #
+    #     return target_column - 1
 
 
 class IA(Player):

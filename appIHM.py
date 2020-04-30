@@ -45,10 +45,10 @@ class MonAppli(QtWidgets.QMainWindow):
         self.gameboard = create_gameboard(self.J1, self.J2)
 
 
+
         self.painter = QtGui.QPainter()
         self.ui.conteneur.paintEvent = self.draw_pieces
 
-        self.bout_commencer.clicked.connect(self.launch_game)
         self.mousePressEvent
 
         self.row = []
@@ -202,7 +202,6 @@ class MonAppli(QtWidgets.QMainWindow):
     def draw_pieces(self, *args):
         self.painter.begin(self.ui.conteneur)
         qp = self.painter
-        print('ok')
         for player in [self.J1, self.J2]:
             piece = player.where_piece(self.gameboard)[0]
             if player == self.J1:
@@ -334,25 +333,6 @@ class MonAppli(QtWidgets.QMainWindow):
         self.painter.end()
         # self.ui.conteneur.update()
 
-    def launch_game(self, *args):
-
-        init = initialisation(self.J1, self.J2)
-        player_turn = init["player_turn"]
-
-        # Jeu
-        while self.J1.where_piece(self.gameboard)[1] != 0 and self.J2.where_piece(self.gameboard)[1] != 0:
-            play_turn(player_turn, self.J1, self.J2, self.gameboard)
-            view(self.gameboard)
-            self.draw_pieces
-            player_turn["player_number"] += 1
-
-        # Comdition de gagne
-        if self.J1.score < self.J2.score:
-            display_message("Le joueur 2 a gagné.", "green")
-            add_player(nickname, self.J2.score)
-        else:
-            display_message("Le joueur 1 a gagné.", "blue")
-            add_player(nickname, self.J1.score)
 
 
 if __name__ == "__main__":

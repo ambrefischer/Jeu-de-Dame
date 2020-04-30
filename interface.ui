@@ -34,8 +34,8 @@
    <widget class="QPushButton" name="bout_quitter">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>80</y>
+      <x>540</x>
+      <y>50</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -47,8 +47,8 @@
    <widget class="QPushButton" name="bout_enre">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>180</y>
+      <x>690</x>
+      <y>50</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -60,8 +60,8 @@
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>270</y>
+      <x>520</x>
+      <y>110</y>
       <width>256</width>
       <height>192</height>
      </rect>
@@ -74,17 +74,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="bout_commencer">
+   <widget class="QPushButton" name="bout_valider">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>130</y>
+      <x>620</x>
+      <y>400</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Commencer</string>
+     <string>Valider</string>
     </property>
    </widget>
   </widget>
