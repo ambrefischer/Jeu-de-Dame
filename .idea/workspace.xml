@@ -14,10 +14,11 @@
   <component name="ProjectId" id="1b53UIMANiy0ogILzMBuatfcXjQ" />
   <component name="PropertiesComponent">
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Python/ihm_Ambre_Fischer/applicationIHM.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../version sans ihm" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Ambre\Documents\ENSTA\EDP" />
       <recent name="C:\Users\Ambre\Documents\ENSTA\Python" />
       <recent name="C:\Users\Ambre\Documents\ENSTA\Jeu de dames\github\Jeu-de-Dame" />
     </key>
@@ -35,7 +36,7 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.start">
-    <configuration name="Examen_Ambre_Fischer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Examen_EDP_Ambre_Fischer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Jeu-de-Dame" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -43,11 +44,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../Python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../EDP" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../Python/Examen_Ambre_Fischer.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../EDP/Examen_EDP_Ambre_Fischer.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -56,7 +57,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="appIHM" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Examen_EDP_D322_Ambre_Fischer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Jeu-de-Dame" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -64,11 +65,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../EDP/Examen_EDP_Ambre_Fischer" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/appIHM.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../EDP/Examen_EDP_Ambre_Fischer/Examen_EDP_D322_Ambre_Fischer.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -77,7 +78,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="applicationIHM" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Examen_EDP_D433_Ambre_Fischer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Jeu-de-Dame" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -85,11 +86,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../Python/ihm_Ambre_Fischer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../EDP/Examen_EDP_Ambre_Fischer" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../Python/ihm_Ambre_Fischer/applicationIHM.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../EDP/Examen_EDP_Ambre_Fischer/Examen_EDP_D433_Ambre_Fischer.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -98,7 +99,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="scratch_8" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Examen_EDP_Partie3_Ambre_Fischer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Jeu-de-Dame" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -106,11 +107,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../EDP" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_8.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../EDP/Examen_EDP_Partie3_Ambre_Fischer.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -143,10 +144,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.start" />
-        <item itemvalue="Python.appIHM" />
-        <item itemvalue="Python.applicationIHM" />
-        <item itemvalue="Python.scratch_8" />
-        <item itemvalue="Python.Examen_Ambre_Fischer" />
+        <item itemvalue="Python.Examen_EDP_D322_Ambre_Fischer" />
+        <item itemvalue="Python.Examen_EDP_D433_Ambre_Fischer" />
+        <item itemvalue="Python.Examen_EDP_Partie3_Ambre_Fischer" />
+        <item itemvalue="Python.Examen_EDP_Ambre_Fischer" />
       </list>
     </recent_temporary>
   </component>
