@@ -15,14 +15,13 @@ import sys
 
 
 
-
 def letsplay():
     play_turn(player_turn, J1, J2, gameboard, window2)
     view(gameboard)
     window2.gameboard = gameboard
     window2.conteneur.update()
-
     player_turn["player_number"] += 1
+
 
 
 
@@ -33,7 +32,7 @@ if __name__ == "__main__":
     # window1.show()
     # app.exec_()
     # window2 = MonAppli(window1.J1, window1.nickname)
-    window2 = MonAppli(Human(1, 0, 2, 1), "ambre")
+    window2 = MonAppli(IA(1, 0, 2, 1, "facile"), "ambre")
 
     J1 = window2.J1
     J2 = window2.J2

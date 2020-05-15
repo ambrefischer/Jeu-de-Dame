@@ -12,6 +12,7 @@ from constants import *
 from highscore import *
 from appIHM import MonAppli
 import numpy as np
+from start import letsplay
 
 
 
@@ -172,18 +173,13 @@ def play_turn(player_turn, J1, J2, gameboard, appli):
     coords_pieces = player.where_piece(gameboard)[0]
     must_capture = player.must_capture(gameboard)
 
-    display_message(
-        "Joueur %d, à vous de jouer. Votre score est de %d."
-        % (player.number, player.score)
-    )
-
     #Si le joueur est un humain
     if isinstance(player, Human) == True:
         human_play_turn(player_turn, player, gameboard, appli, coords_pieces, must_capture)
 
     # Si le joueur est l'ordi
     else:
-        IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture)
+        IA_play_turn(player, gameboard, coords_pieces, must_capture)
 
 
 def human_play_turn(player_turn, player, gameboard, appli, coords_pieces, must_capture):
@@ -236,13 +232,16 @@ def human_play_turn(player_turn, player, gameboard, appli, coords_pieces, must_c
     #Le joueur est dans le cas où il peut rejouer.
     if player_turn["status"] == STILL_PLAYING:
         view(gameboard)
-        play_turn_again(play_again, player_turn, player, coords["t_row"], coords["t_column"], gameboard)
+        # play_turn_again(play_again, player_turn, player, coords["t_row"], coords["t_column"], gameboard, appli)
 
     #Le joueur a fini de jouer.
     player_turn["status"] = END_OF_TURN
 
+    appli.textBrowser.setText("Joueur %d, à vous de jouer. Votre score est de %d."
+        % (player.number, player.score))
 
-def IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
+
+def IA_play_turn(player, gameboard, coords_pieces, must_capture):
 
     possible_capture = len(must_capture)
 
@@ -265,7 +264,6 @@ def IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
         #On détermine quel mouvement l'ordi peut faire.
         n = len(possible_move)
         index2 = np.random.randint(0, n)  # détermine aléatoirement le coup joué
-        print(possible_move)
         move_kept = possible_move[index2]
 
         Piece = Checker(coords_pieces[move_kept[0]][1], coords_pieces[move_kept[0]][2],
@@ -306,7 +304,7 @@ def IA_play_turn(player_turn, player, gameboard, coords_pieces, must_capture):
             gameboard[must_capture[index2][2][0]][must_capture[index2][2][1]] = 0
             player.win_one_point()
 
-def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard):
+def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard, appli):
     """
     Simule la suite du tour d'un joueur lorsque celui-ci peut continuer de jouer.
 
@@ -333,7 +331,7 @@ def play_turn_again(play_again, player_turn, player, s_row, s_column, gameboard)
     #Demande de rentrer des coordonnées pour la case ciblée.
     coords_pieces = player.where_piece(gameboard)[0]
     must_capture = player.must_capture(gameboard)
-    coords_again = {"t_row": player.choose_t_row(gameboard), "t_column": player.choose_t_column(gameboard)}
+    coords_again = {"t_row": player.choose_t_row(appli), "t_column": player.choose_t_column(appli)}
     make_another_move = player.check_coords(s_row, s_column, coords_again["t_row"], coords_again["t_column"],
                                             gameboard, coords_pieces, must_capture)
 

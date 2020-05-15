@@ -11,7 +11,9 @@ from utils import *
 
 # def create_gameboard(J1, J2):
 #     gameboard = np.zeros((10,10))
-#     gameboard[9][8] = 1
+#     gameboard[1][2] = 1
+#     gameboard[3][4] = 1
+#     gameboard[4][5] = 2
 #     print(gameboard)
 #     return gameboard
 

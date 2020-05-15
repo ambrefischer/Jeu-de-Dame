@@ -50,10 +50,11 @@ class MonAppli(QtWidgets.QMainWindow):
         self.ui.conteneur.paintEvent = self.draw_pieces
 
         self.mousePressEvent
-
         self.row = []
         self.column = []
         # self.textBrowser.setText()
+
+
 
     def mousePressEvent(self, event):
         if event.buttons() == QtCore.Qt.LeftButton:
@@ -194,8 +195,8 @@ class MonAppli(QtWidgets.QMainWindow):
                 elif x > 412 and x < 460:
                     self.column.append(8)
 
-
             print(self.row, self.column)
+
 
 
 
@@ -204,6 +205,7 @@ class MonAppli(QtWidgets.QMainWindow):
         qp = self.painter
         for player in [self.J1, self.J2]:
             piece = player.where_piece(self.gameboard)[0]
+            print(piece)
             if player == self.J1:
                 image = QtGui.QImage("icons/pion_noir.png")
             else:

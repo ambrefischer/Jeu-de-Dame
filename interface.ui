@@ -86,6 +86,22 @@ p, li { white-space: pre-wrap; }
     <property name="text">
      <string>Valider</string>
     </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>350</y>
+      <width>241</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -101,15 +117,7 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>Files</string>
     </property>
-    <widget class="QMenu" name="menuMode_de_jeu">
-     <property name="title">
-      <string>Mode de jeu</string>
-     </property>
-     <addaction name="action2_joueurs"/>
-     <addaction name="actionordinateur"/>
-    </widget>
     <addaction name="actionQuitter"/>
-    <addaction name="menuMode_de_jeu"/>
    </widget>
    <addaction name="menuFiles"/>
   </widget>
@@ -143,8 +151,8 @@ p, li { white-space: pre-wrap; }
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>673</x>
-     <y>108</y>
+     <x>603</x>
+     <y>93</y>
     </hint>
     <hint type="destinationlabel">
      <x>648</x>
